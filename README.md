@@ -6,10 +6,10 @@ Performance compared to the [reference](https://github.com/emmanuel-marty/lzsa/b
 ```
 Text file, 26582 -> 64115 bytes
   SHVC-LZSA2/ROM decompressor:
-    Master clocks:  13951884   0.650s  98.697kbps
+    Master clocks:  13951884   0.650s  98.697KB/s
     CPU cycles:      2178471
   Reference decompressor:
-    Master clocks:  43206022   2.012s  31.871kbps
+    Master clocks:  43206022   2.012s  31.871KB/s
     CPU cycles:      5558506
 ```
 
