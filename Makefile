@@ -7,6 +7,7 @@ as := tools/cc65/bin/ca65
 ld := tools/cc65/bin/ld65
 lzsa := tools/lzsa/lzsa
 mesen := /Applications/Mesen.app/Contents/MacOS/Mesen
+make_test := ./make_lua_test.py
 
 ld_script := link.cfg
 
@@ -72,12 +73,12 @@ test: $(test_roms)
 	@echo "Running tests..."
 	@echo
 	@echo "2889 (text file, 15450 -> 32893 bytes)"
-	@$(mesen) --testrunner $(build_dir)/test_rom_2889.sfc test/test_rom.lua
-	@$(mesen) --testrunner $(build_dir)/test_reference_2889.sfc test/test_reference.lua
+	@$(mesen) --testrunner $(build_dir)/test_reference_2889.sfc $(build_dir)/test_reference_2889.sfc.lua
+	@$(mesen) --testrunner $(build_dir)/test_rom_2889.sfc $(build_dir)/test_rom_2889.sfc.lua
 	@echo
 	@echo "ABAM (text file, 26582 -> 64115 bytes)"
-	@$(mesen) --testrunner $(build_dir)/test_rom_abam.sfc test/test_rom.lua
-	@$(mesen) --testrunner $(build_dir)/test_reference_abam.sfc test/test_reference.lua
+	@$(mesen) --testrunner $(build_dir)/test_reference_abam.sfc $(build_dir)/test_reference_abam.sfc.lua
+	@$(mesen) --testrunner $(build_dir)/test_rom_abam.sfc $(build_dir)/test_rom_abam.sfc.lua
 
 $(obj_dir)/test_%.o: $(test_src_dir)/%.s $(inc) $(data) Makefile $(as) | $(obj_dir)
 	$(as) -I include --debug-info -o $@ $<
@@ -85,15 +86,19 @@ $(obj_dir)/test_%.o: $(test_src_dir)/%.s $(inc) $(data) Makefile $(as) | $(obj_d
 test_rom_2889_obj := $(addprefix $(obj_dir)/test_, test_rom.o data_txt_2889.o) $(test_common_obj)
 $(build_dir)/test_rom_2889.sfc: $(test_rom_2889_obj) $(ld_script) Makefile $(ld)
 	$(ld) --dbgfile $(build_dir)/test_rom_2889.dbg --mapfile $(build_dir)/test_rom_2889.map -o $@ --config $(ld_script) $(test_rom_2889_obj)
-
-test_rom_abam_obj := $(addprefix $(obj_dir)/test_, test_rom.o data_txt_abam.o) $(test_common_obj)
-$(build_dir)/test_rom_abam.sfc: $(test_rom_abam_obj) $(ld_script) Makefile $(ld)
-	$(ld) --dbgfile $(build_dir)/test_rom_abam.dbg --mapfile $(build_dir)/test_rom_abam.map -o $@ --config $(ld_script) $(test_rom_abam_obj)
+	$(make_test) bench:Test:"SHVC-LZSA2/ROM decompressor" >$@.lua
 
 test_reference_2889_obj := $(addprefix $(obj_dir)/test_, test_reference.o lzsa2_reference.o data_txt_2889.o) $(test_common_obj)
 $(build_dir)/test_reference_2889.sfc: $(test_reference_2889_obj) $(ld_script) Makefile $(ld)
 	$(ld) --dbgfile $(build_dir)/test_reference_2889.dbg --mapfile $(build_dir)/test_reference_2889.map -o $@ --config $(ld_script) $(test_reference_2889_obj)
+	$(make_test) bench:Test:"Reference decompressor" >$@.lua
+
+test_rom_abam_obj := $(addprefix $(obj_dir)/test_, test_rom.o data_txt_abam.o) $(test_common_obj)
+$(build_dir)/test_rom_abam.sfc: $(test_rom_abam_obj) $(ld_script) Makefile $(ld)
+	$(ld) --dbgfile $(build_dir)/test_rom_abam.dbg --mapfile $(build_dir)/test_rom_abam.map -o $@ --config $(ld_script) $(test_rom_abam_obj)
+	$(make_test) bench:Test:"SHVC-LZSA2/ROM decompressor" >$@.lua
 
 test_reference_abam_obj := $(addprefix $(obj_dir)/test_, test_reference.o lzsa2_reference.o data_txt_abam.o) $(test_common_obj)
 $(build_dir)/test_reference_abam.sfc: $(test_reference_abam_obj) $(ld_script) Makefile $(ld)
 	$(ld) --dbgfile $(build_dir)/test_reference_abam.dbg --mapfile $(build_dir)/test_reference_abam.map -o $@ --config $(ld_script) $(test_reference_abam_obj)
+	$(make_test) bench:Test:"Reference decompressor" >$@.lua
