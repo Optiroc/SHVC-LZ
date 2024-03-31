@@ -1,0 +1,6 @@
+*.s linguist-language=asm
+*.inc linguist-language=asm
+data/** linguist-vendored
+data/** linguist-documentation
+tools/** linguist-vendored
+tools/** linguist-documentation
