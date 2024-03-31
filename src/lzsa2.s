@@ -50,10 +50,10 @@ LZSA2_OPT_DMA_SCRATCHPAD = 1 ; Use DMA registers as scratchpad for MVN instructi
 ;
 ; Parameters (a8i16):
 ;   x           Source offset
-;   y           Source offset
+;   y           Destination offset
 ;   b:a         Destination:Source banks
-; Returns:
-;   a           Decompressed length
+; Returns (a8i16):
+;   x           Decompressed length
 LZSA2_DecompressBlock:
     .a8
     .i16
@@ -70,6 +70,8 @@ Setup:
     sep #$20
     .a8
 .endif
+
+    phy                     ; Push destination offset for decompressed length calculation
 
     stz <LZSA2_nibrdy
     stx <LZSA2_source+$00   ; Write source for indirect and block move addressing
@@ -341,6 +343,15 @@ DecodeMatchLen:             ; Match offset in A
     jmp ReadToken
 
 Done:
+    rep #$20
+    .a16
+    lda <LZSA2_dest         ; Calculate decompressed size
+    sec
+    sbc 1,s                 ; Start offset on stack
+    plx                     ; Unwind
+    tax
+    sep #$20
+    .a8
 .if LZSA2_OPT_DMA_SCRATCHPAD = 1
     pld
 .endif
