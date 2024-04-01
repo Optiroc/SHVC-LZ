@@ -306,6 +306,8 @@ DecodeMatchLen:             ; Match offset in A
     inc <LZSA2_source
     lda [<LZSA2_source]
     inc <LZSA2_source
+    inc <LZSA2_source
+    dec
     bra @CopyMatch
 
 @MatchLenByte:              ; Match length: Byte + nibble value + 2
