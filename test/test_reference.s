@@ -17,8 +17,6 @@
 .import Compressed, LZSA2_DecompressBlock
 .export Main, Scratchpad
 
-Destination = $7f0000
-
 Main:
     .a8
     .i16
@@ -30,8 +28,7 @@ Main:
     dex
     bne :-
 
-Test_START:
-
+Benchmark_START:
     ; Set source/destination
     ldx #.loword(Compressed)
     stx LZSA_SRC_LO
@@ -45,7 +42,11 @@ Test_START:
 
     jsl BSS_DECOMPRESS_LZSA2
 
-Test_END:
+Benchmark_END:
+    nop
+Asserts_END:
+    nop
+Tests_DONE:
     nop
 :   nop
     bra :-
@@ -53,3 +54,7 @@ Test_END:
 .segment "ZEROPAGE"
 Scratchpad:
     .res $10
+
+.segment "BSS7F"
+Destination:
+    .res $ffff

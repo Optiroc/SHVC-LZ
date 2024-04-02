@@ -10,8 +10,6 @@
 .autoimport
 .export Main
 
-Destination = $7f0000
-
 Main:
     .a8
     .i16
@@ -35,4 +33,8 @@ Main:
 
 .segment "RODATA"
 Compressed:
-    .incbin "../data/abam.txt.lzsa2"
+    .incbin "../data/short.txt.lzsa2"
+
+.segment "BSS7F"
+Destination:
+    .res $ffff

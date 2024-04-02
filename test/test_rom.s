@@ -13,14 +13,12 @@
 .import Compressed, LZSA2_DecompressBlock
 .export Main
 
-Destination = $7f0000
-
 Main:
     .a8
     .i16
     nop
 
-Test_START:
+Benchmark_START:
     ; Set source/destination
     ldy #.loword(Destination)
     ldx #.loword(Compressed)
@@ -30,7 +28,15 @@ Test_START:
 
     jsl LZSA2_DecompressBlock
 
-Test_END:
+Benchmark_END:
+    nop
+Asserts_END:
+    nop
+Tests_DONE:
     nop
 :   nop
     bra :-
+
+.segment "BSS7F"
+Destination:
+    .res $ffff
