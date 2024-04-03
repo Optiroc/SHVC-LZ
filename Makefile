@@ -70,7 +70,9 @@ test_roms := $(build_dir)/test_rom_2889.sfc $(build_dir)/test_reference_2889.sfc
 test_roms += $(build_dir)/test_rom_abam.sfc $(build_dir)/test_reference_abam.sfc
 test_roms += $(build_dir)/test_rom_short.sfc $(build_dir)/test_reference_short.sfc
 
-test: $(test_roms)
+test_scripts := $(addsuffix .lua, $(test_roms))
+
+test: $(test_roms) $(test_scripts)
 	@echo "Running tests..."
 	@echo
 	@echo "Short (text file, 42 -> 51 bytes)"
@@ -89,31 +91,37 @@ $(obj_dir)/test_%.o: $(test_src_dir)/%.s $(inc) $(data) Makefile $(as) | $(obj_d
 	$(as) -I include --debug-info -o $@ $<
 
 test_rom_2889_obj := $(addprefix $(obj_dir)/test_, test_rom.o data_txt_2889.o) $(test_common_obj)
-$(build_dir)/test_rom_2889.sfc: $(test_rom_2889_obj) $(ld_script) Makefile $(ld)
+$(build_dir)/test_rom_2889.sfc: $(test_rom_2889_obj) $(ld_script) $(ld) Makefile
 	$(ld) --dbgfile $(build_dir)/test_rom_2889.dbg --mapfile $(build_dir)/test_rom_2889.map -o $@ --config $(ld_script) $(test_rom_2889_obj)
-	$(make_test) bench:Benchmark:"SHVC-LZSA2/ROM decompressor" assert_state:Asserts_END:[cpu.a]:32893 assert_range:Asserts_END:Destination:data/2889.txt done:Tests_DONE >$@.lua
+$(build_dir)/test_rom_2889.sfc.lua: $(build_dir)/test_rom_2889.sfc $(make_test)
+	$(make_test) bench:Benchmark:"SHVC-LZSA2/ROM decompressor" assert_state:Asserts_END:[cpu.a]:32893 assert_range:Asserts_END:Destination:data/2889.txt done:Tests_DONE >$@
 
 test_rom_abam_obj := $(addprefix $(obj_dir)/test_, test_rom.o data_txt_abam.o) $(test_common_obj)
-$(build_dir)/test_rom_abam.sfc: $(test_rom_abam_obj) $(ld_script) Makefile $(ld)
+$(build_dir)/test_rom_abam.sfc: $(test_rom_abam_obj) $(ld_script) $(ld) Makefile
 	$(ld) --dbgfile $(build_dir)/test_rom_abam.dbg --mapfile $(build_dir)/test_rom_abam.map -o $@ --config $(ld_script) $(test_rom_abam_obj)
-	$(make_test) bench:Benchmark:"SHVC-LZSA2/ROM decompressor" assert_state:Asserts_END:[cpu.a]:64115 assert_range:Asserts_END:Destination:data/abam.txt done:Tests_DONE >$@.lua
+$(build_dir)/test_rom_abam.sfc.lua: $(build_dir)/test_rom_abam.sfc $(make_test)
+	$(make_test) bench:Benchmark:"SHVC-LZSA2/ROM decompressor" assert_state:Asserts_END:[cpu.a]:64115 assert_range:Asserts_END:Destination:data/abam.txt done:Tests_DONE >$@
 
 test_rom_short_obj := $(addprefix $(obj_dir)/test_, test_rom.o data_txt_short.o) $(test_common_obj)
-$(build_dir)/test_rom_short.sfc: $(test_rom_short_obj) $(ld_script) Makefile $(ld)
+$(build_dir)/test_rom_short.sfc: $(test_rom_short_obj) $(ld_script) $(ld) Makefile
 	$(ld) --dbgfile $(build_dir)/test_rom_short.dbg --mapfile $(build_dir)/test_rom_short.map -o $@ --config $(ld_script) $(test_rom_short_obj)
-	$(make_test) bench:Benchmark:"SHVC-LZSA2/ROM decompressor" assert_state:Asserts_END:[cpu.a]:51 assert_range:Asserts_END:Destination:data/short.txt done:Tests_DONE >$@.lua
+$(build_dir)/test_rom_short.sfc.lua: $(build_dir)/test_rom_short.sfc $(make_test)
+	$(make_test) bench:Benchmark:"SHVC-LZSA2/ROM decompressor" assert_state:Asserts_END:[cpu.a]:51 assert_range:Asserts_END:Destination:data/short.txt done:Tests_DONE >$@
 
 test_reference_2889_obj := $(addprefix $(obj_dir)/test_, test_reference.o lzsa2_reference.o data_txt_2889.o) $(test_common_obj)
-$(build_dir)/test_reference_2889.sfc: $(test_reference_2889_obj) $(ld_script) Makefile $(ld)
+$(build_dir)/test_reference_2889.sfc: $(test_reference_2889_obj) $(ld_script) $(ld) Makefile
 	$(ld) --dbgfile $(build_dir)/test_reference_2889.dbg --mapfile $(build_dir)/test_reference_2889.map -o $@ --config $(ld_script) $(test_reference_2889_obj)
-	$(make_test) bench:Benchmark:"Reference decompressor" assert_range:Asserts_END:Destination:data/2889.txt done:Tests_DONE >$@.lua
+$(build_dir)/test_reference_2889.sfc.lua: $(build_dir)/test_reference_2889.sfc $(make_test)
+	$(make_test) bench:Benchmark:"Reference decompressor" assert_range:Asserts_END:Destination:data/2889.txt done:Tests_DONE >$@
 
 test_reference_abam_obj := $(addprefix $(obj_dir)/test_, test_reference.o lzsa2_reference.o data_txt_abam.o) $(test_common_obj)
-$(build_dir)/test_reference_abam.sfc: $(test_reference_abam_obj) $(ld_script) Makefile $(ld)
+$(build_dir)/test_reference_abam.sfc: $(test_reference_abam_obj) $(ld_script) $(ld) Makefile
 	$(ld) --dbgfile $(build_dir)/test_reference_abam.dbg --mapfile $(build_dir)/test_reference_abam.map -o $@ --config $(ld_script) $(test_reference_abam_obj)
-	$(make_test) bench:Benchmark:"Reference decompressor" assert_range:Asserts_END:Destination:data/abam.txt done:Tests_DONE >$@.lua
+$(build_dir)/test_reference_abam.sfc.lua: $(build_dir)/test_reference_abam.sfc $(make_test)
+	$(make_test) bench:Benchmark:"Reference decompressor" assert_range:Asserts_END:Destination:data/abam.txt done:Tests_DONE >$@
 
 test_reference_short_obj := $(addprefix $(obj_dir)/test_, test_reference.o lzsa2_reference.o data_txt_short.o) $(test_common_obj)
-$(build_dir)/test_reference_short.sfc: $(test_reference_short_obj) $(ld_script) Makefile $(ld)
+$(build_dir)/test_reference_short.sfc: $(test_reference_short_obj) $(ld_script) $(ld) Makefile
 	$(ld) --dbgfile $(build_dir)/test_reference_short.dbg --mapfile $(build_dir)/test_reference_short.map -o $@ --config $(ld_script) $(test_reference_short_obj)
-	$(make_test) bench:Benchmark:"Reference decompressor" assert_range:Asserts_END:Destination:data/short.txt done:Tests_DONE >$@.lua
+$(build_dir)/test_reference_short.sfc.lua: $(build_dir)/test_reference_short.sfc $(make_test)
+	$(make_test) bench:Benchmark:"Reference decompressor" assert_range:Asserts_END:Destination:data/short.txt done:Tests_DONE >$@
