@@ -20,7 +20,7 @@ rom := $(build_dir)/$(name).sfc
 dbg := $(build_dir)/$(name).dbg
 map := $(build_dir)/$(name)_map.txt
 
-common_obj_list := boot.o init.o header.o lzsa2.o
+common_obj_list := boot.o init.o header.o lzsa2-fast.o
 main_obj_list := main.o
 main_obj := $(addprefix $(obj_dir)/,$(main_obj_list) $(common_obj_list))
 data := data/2889.txt.lzsa2 data/abam.txt.lzsa2 data/short.txt.lzsa2

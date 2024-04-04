@@ -2,7 +2,6 @@
 
 # Add size:label
 
-import argparse
 import random
 import string
 import sys
@@ -125,13 +124,15 @@ end
 
 function {ID}_benchmarkEnd(address, value)
   local state = emu.getState()
+  local xtal = state["clockRate"]
   local clocks_end = state["masterClock"]
   local cpu_cycles_end = state["cpu.cycleCount"]
 
   local clocks_total = clocks_end - {ID}_clocks_start
+  local seconds = clocks_total / xtal
   local cpu_cycles_total = cpu_cycles_end - {ID}_cpu_cycles_start
   print("benchmark: {NAME}")
-  print(" > master clocks: "..clocks_total)
+  print(" > master clocks: "..clocks_total.." ("..seconds.."s)")
   print(" > cpu cycles:    "..cpu_cycles_total)
   emu.stop(0) --SUCCESS
 end
@@ -152,9 +153,6 @@ emu.addMemoryCallback({ID}_benchmarkEnd, emu.callbackType.exec, {ID}_endAddr)
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-b", "--benchmark", dest="benchmarks", action="append", help="add benchmark for label")
-
     try:
         argv = sys.argv[1:]
         if (len(argv) < 1):
