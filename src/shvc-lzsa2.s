@@ -1,16 +1,17 @@
 ; SHVC-LZSA2
 ; David Lindecrantz <optiroc@me.com>
 ;
-; LZSA2 decompressor: SNES specific fast variant
-; Code size: xx bytes
+; LZSA2 decompressor for Super Famicom/Nintendo
+; Code size: 327 to 368 bytes
 ; Decompression speed: 100-110 KB/s
 
 .p816
 .smart -
 .feature c_comments
 
-LZSA2_OPT_MAPMODE = 0 ; 0 = Code linked at bank with mode 20 type mapping
-LZSA2_OPT_INLINE = 1 ; 1 = Inline functions
+LZSA2_OPT_INLINE = 1 ; 1 = Inline functions (adds 35 bytes to code size)
+LZSA2_OPT_MAPMODE = 1 ; 0 = Code linked at bank with mode 20 type mapping, 1 = mode 21 type mapping
+LZSA2_OPT_RETLEN = 1 ; 1 = Return decompressed length in X (adds 6 bytes to code size)
 
 .export LZSA2_DecompressBlock
 
@@ -19,7 +20,7 @@ LZSA2_OPT_INLINE = 1 ; 1 = Inline functions
 .define LZSA2_nibrdy    $804372 ; 1 Nibble ready
 .define LZSA2_match     $804373 ; 2 Previous match offset
 .define LZSA2_mvn       $804375 ; 4 Match block move (mvn + banks + return)
-.define LZSA2_tmp       $804379 ; 3 Temporary variables
+.define LZSA2_tmp       $804379 ; 3 Temporary storage
 
 .define LZSA2_dma_p     $804360 ; Literal DMA parameters
 .define LZSA2_dma_bba   $804361 ; Literal DMA B-bus address
@@ -65,11 +66,11 @@ LZSA2_OPT_INLINE = 1 ; 1 = Inline functions
 
 ; Decompress LZSA2 block
 ;
-; Parameters (a8i16):
+; In (a8i16):
 ;   x           Source offset
 ;   y           Destination offset
 ;   b:a         Destination:Source banks
-; Returns (a8i16):
+; Out (a8i16):
 ;   x           Decompressed length
 LZSA2_DecompressBlock:
     .a8
@@ -95,7 +96,10 @@ Setup:
     .a8
 
     stz <LZSA2_nibrdy       ; Init state
+
+.if LZSA2_OPT_RETLEN = 1
     phy                     ; Push destination offset for decompressed length calculation
+.endif
 
     sta <LZSA2_dma_src+2    ; Source bank -> WRAM data port address
     xba
@@ -146,35 +150,10 @@ DecodeLitLen:
     bra DecodeMatchOffset
 
 @ExtLitLen:
-    readNibble
-    cmp #$0f
-    bne @LitLenNibble
-
-    readByte                ; Long literal, read next byte
-    cmp #$ef
-    beq @LitLenWord
-
-@LitLenByte:                ; Literal length: Byte + nibble value + 3
-    clc
-    adc #(15 + 3)
-    rep #$20
-    .a16
-    and #$00ff
-    bra CopyLiteral
-
-@LitLenWord:                ; Literal length: Next word
-    rep #$20
-    .a16
-    readWord
-    bra CopyLiteral
-
-@LitLenNibble:              ; Literal length: Nibble value + 3
-    .a8
-    clc
-    adc #3
-    rep #$20
-    .a16
-    and #$00ff
+    phy
+    ldy #0
+    jsr GetExtLen
+    ply
 
 ;
 ; Copy literal via DMA (CPU bus -> WMDATA)
@@ -187,7 +166,7 @@ CopyLiteral:
     sta <LZSA2_dma_len      ; Set DMA parameters
     stx <LZSA2_dma_src
 
-    sty <LZSA2_tmp          ; Increment source offset
+    sty <LZSA2_tmp          ; Increment destination offset
     clc
     adc <LZSA2_tmp
     tay
@@ -304,38 +283,11 @@ DecodeMatchLen:             ; Match offset in A
     bra CopyMatch
 
 @ExtMatchLen:
-    .a8
-    readNibble
-    cmp #$0f
-    bne @MatchLenNibble
-    readByte                ; Long match, read next byte
-    cmp #$e8
-    bcc @MatchLenByte
-    beq Done
-
-@MatchLenWord:              ; Match length: Next word
-    rep #$20
-    .a16
-    readWord
+    phy
+    ldy #1
+    jsr GetExtLen
     dec
-    bra CopyMatch
-
-@MatchLenByte:              ; Match length: Byte + nibble value + 2
-    .a8
-    clc
-    adc #(7 + 15 + 2 - 1)
-    rep #$20
-    .a16
-    and #$00ff
-    bra CopyMatch
-
-@MatchLenNibble:            ; Match length: Nibble value + 2
-    .a8
-    clc
-    adc #(7 + 2 - 1)
-    rep #$20
-    .a16
-    and #$001f
+    ply
 
 ;
 ; Copy match via block move
@@ -366,26 +318,59 @@ CopyMatch:
     jmp ReadToken
 
 ;
-; Decompression done
+; Get extended length
 ;
-Done:
+; Length type in Y: 0 = Literal, 1 = Match
+;
+GetExtLen:
+    .a8
+    readNibble
+    cmp #$0f
+    bcs @LenByte
+
+@LenNibble:
+    adc NibbleLenAdd,y
+@ByteReady:
     rep #$20
     .a16
-    tya                     ; Calculate decompressed size
+    and #$00ff
+    rts
+
+@LenByte:
+    readByte
+    adc ByteLenAdd,y
+    bcc @ByteReady
+    beq @Done
+
+@LenWord:
+    rep #$20
+    .a16
+    readWord
+    rts
+
+@Done:
+    rep #$20
+    .a16
+    pla                     ; Unwind pushed Y -> A
+    pla
+.if LZSA2_OPT_RETLEN = 1
     sec
     sbc 1,s                 ; Start offset on stack
     plx                     ; Unwind
     tax
+.endif
     sep #$20
     .a8
     plb                     ; Restore DP and DB
     pld
     rtl
 
+NibbleLenAdd:
+    .byte 3, 9
+ByteLenAdd:
+    .byte 17, 23
+
 .if LZSA2_OPT_INLINE = 0
-;
-; Get next nibble
-;
 GetNibble:
     .a8
     lsr <LZSA2_nibrdy       ; Nibble ready?

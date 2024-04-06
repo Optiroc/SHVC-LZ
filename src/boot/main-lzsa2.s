@@ -1,4 +1,4 @@
-; SHVC-LZSA2
+; SHVC-LZ
 ; David Lindecrantz <optiroc@me.com>
 ;
 ; LZSA2 example usage
@@ -33,7 +33,7 @@ Main:
 
 .segment "RODATA"
 Compressed:
-    .incbin "../data/short.txt.lzsa2"
+    .incbin "../../test_data/abam.txt.lzsa2"
 
 .segment "BSS7F"
 Destination:

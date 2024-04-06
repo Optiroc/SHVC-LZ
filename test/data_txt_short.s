@@ -7,4 +7,4 @@
 
 .segment "RODATA"
 Compressed:
-    .incbin "../data/short.txt.lzsa2"
+    .incbin "../test_data/short.txt.lzsa2"

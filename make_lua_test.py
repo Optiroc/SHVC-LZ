@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 
-# Add size:label
-
 import random
 import string
 import sys
 from pathlib import Path
 from struct import unpack
+
+def make_id():
+    return ''.join(random.choices(string.ascii_letters, k=8))
 
 def make_boilerplate():
     return """
@@ -33,9 +34,7 @@ emu.addMemoryCallback({ID}_done, emu.callbackType.exec, {ID}_donePC)
     if len(parameters) != 1:
         raise ValueError("done parameters malformed ({})".format(parameters))
     pc_label = parameters[0]
-
-    id = ''.join(random.choices(string.ascii_letters, k=8))
-
+    id = make_id()
     return template.replace("{ID}", id).replace("{PC_LABEL}", pc_label)
 
 
@@ -58,9 +57,7 @@ emu.addMemoryCallback({ID}_assertState, emu.callbackType.exec, {ID}_assertPC)
     if len(parameters) != 3:
         raise ValueError("assert_state parameters malformed ({})".format(parameters))
     pc_label, state_path, expected = parameters
-
-    id = ''.join(random.choices(string.ascii_letters, k=8))
-
+    id = make_id()
     return template.replace("{ID}", id)\
       .replace("{PC_LABEL}", pc_label)\
       .replace("{STATE_PATH}", state_path)\
@@ -80,7 +77,7 @@ function {ID}_assertRange()
     local a = emu.read(addr + i - 1, emu.memType.snesWorkRam)
     if e ~= a then
       print("assert_range failed: '{PATH}' == {ACTUAL_LABEL} @ {PC_LABEL}")
-      print("  > offset "..(i - 1).." - expected:0x"..string.format("%x", e).." actual:0x"..string.format("%x", a))
+      print("  > offset 0x"..string.format("%x", i - 1).." - expected:0x"..string.format("%x", e).." actual:0x"..string.format("%x", a))
       success = false
       break
     end
@@ -96,9 +93,7 @@ emu.addMemoryCallback({ID}_assertRange, emu.callbackType.exec, {ID}_assertPC)
     if len(parameters) != 3:
         raise ValueError("assert_range parameters malformed ({})".format(parameters))
     pc_label, actual_label, path = parameters
-
-    id = ''.join(random.choices(string.ascii_letters, k=8))
-
+    id = make_id()
     expected_bytes = Path(path).read_bytes()
     chrs = unpack('B' * (len(expected_bytes)), expected_bytes)
     expected_values = []
@@ -145,10 +140,24 @@ emu.addMemoryCallback({ID}_benchmarkEnd, emu.callbackType.exec, {ID}_endAddr)
     if len(parameters) != 2:
         raise ValueError("bench parameters malformed ({})".format(parameters))
     label, name = parameters
-
-    id = ''.join(random.choices(string.ascii_letters, k=8))
+    id = make_id()
     return template.replace("{ID}", id)\
       .replace("{NAME}", name)\
+      .replace("{LABEL}", label)
+
+
+def make_size(parameters):
+    template = """
+{ID}_startAddr = emu.getLabelAddress("{LABEL}")["address"]
+{ID}_endAddr = emu.getLabelAddress("{LABEL}_END")["address"]
+{ID}_size = {ID}_endAddr - {ID}_startAddr
+print("code size: {LABEL} = 0x"..string.format("%x", {ID}_size).." ("..{ID}_size..") bytes")
+"""
+    if len(parameters) != 1:
+        raise ValueError("size parameters malformed ({})".format(parameters))
+    label = parameters[0]
+    id = make_id()
+    return template.replace("{ID}", id)\
       .replace("{LABEL}", label)
 
 
@@ -167,6 +176,7 @@ def main():
             if cmd == "assert_range": output += make_assert_range(parameters)
             if cmd == "bench": output += make_benchmark(parameters)
             if cmd == "done": output += make_done(parameters)
+            if cmd == "size": output += make_size(parameters)
 
         print(output)
         sys.exit(0)
