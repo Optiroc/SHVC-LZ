@@ -22,17 +22,32 @@ Text file, 26582 -> 64115 bytes
   Reference decompressor:
     Master clocks:  43206022   2.012s  31.871KB/s
     CPU cycles:      5558506
+
+Tile data, 1263 -> 4096 bytes
+  SHVC-LZSA2 decompressor:
+    Master clocks:    419886   0.012s  209.511KB/s
+    CPU cycles:        62946
+  Reference decompressor:
+    Master clocks:   2148992   0.100s  40.936KB/s
+    CPU cycles:       276526
+
+Map data, 958 -> 8192 bytes
+  SHVC-LZSA2 decompressor:
+    Master clocks:    763744   0.036s  230.367KB/s
+    CPU cycles:        62946
+  Reference decompressor:
+    Master clocks:   4063014   0.189s  43.303KB/s
+    CPU cycles:       521874
 ```
 
 ## Future work
 - Implement [LZSAv1](https://github.com/emmanuel-marty/lzsa) decoder.
 - Implement [ZX0](https://github.com/einar-saukas/ZX0) decoder.
-- Implement decoder variants optimized for code size.
-- Add compile time options to allow bank boundary crossing.
 
 ## Dependencies
-- [LZSA](https://github.com/emmanuel-marty/lzsa) compressor
+- [lz4ultra](https://github.com/emmanuel-marty/lz4ultra) compressor by Emmanuel Marty
+- [lzsa](https://github.com/emmanuel-marty/lzsa) compressor by Emmanuel Marty
 - ca65 and ld65 from the [cc65](https://github.com/cc65/cc65) development package
-- [Mesen](https://github.com/SourMesen/Mesen2) to run tests and benchmarks
+- [Mesen](https://github.com/SourMesen/Mesen2) by Sour (to run tests and benchmarks)
 
 All dependencies except Mesen are included in the repo.

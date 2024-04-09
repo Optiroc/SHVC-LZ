@@ -1,40 +1,35 @@
-; SHVC-LZSA2
+; SHVC-LZ4
 ; David Lindecrantz <optiroc@me.com>
 ;
-; LZSA2 decompressor for Super Famicom/Nintendo
-; Code size:
-;   Smallest: 327 bytes
-;   Inlining adds 35 bytes
-;   Return value adds 6 bytes
-; Decompression speed: 100-350 KB/s
-;   Tile data: ~200 KB/s
-;   Text: ~100 KB/s
+; LZ4 decompressor for Super Famicom/Nintendo
+; Code size: ? to ? bytes
+; Decompression speed: ? KB/s
 
 .p816
 .smart -
 .feature c_comments
 
-LZSA2_OPT_INLINE = 1 ; 1 = Inline functions (adds 35 bytes to code size)
-LZSA2_OPT_MAPMODE = 1 ; 0 = Code linked at bank with mode 20 type mapping, 1 = mode 21 type mapping
-LZSA2_OPT_RETLEN = 1 ; 1 = Return decompressed length in X (adds 6 bytes to code size)
+LZ4_OPT_INLINE = 1 ; 1 = Inline functions (adds ? bytes to code size)
+LZ4_OPT_MAPMODE = 1 ; 0 = Code linked at bank with mode 20 type mapping, 1 = mode 21 type mapping
+LZ4_OPT_RETLEN = 1 ; 1 = Return decompressed length in X (adds ? bytes to code size)
 
-.export LZSA2_DecompressBlock
+.export LZ4_DecompressBlock
 
-.define LZSA2_token     $804370 ; 1 Current token
-.define LZSA2_nibble    $804371 ; 1 Current nibble
-.define LZSA2_nibrdy    $804372 ; 1 Nibble ready
-.define LZSA2_match     $804373 ; 2 Previous match offset
-.define LZSA2_mvn       $804375 ; 4 Match block move (mvn + banks + return)
-.define LZSA2_tmp       $804379 ; 3 Temporary storage
+.define LZ4_token     $804370 ; 1 Current token
+.define LZ4_nibble    $804371 ; 1 Current nibble
+.define LZ4_nibrdy    $804372 ; 1 Nibble ready
+.define LZ4_match     $804373 ; 2 Previous match offset
+.define LZ4_mvn       $804375 ; 4 Match block move (mvn + banks + return)
+.define LZ4_tmp       $804379 ; 3 Temporary storage
 
-.define LZSA2_dma_p     $804360 ; Literal DMA parameters
-.define LZSA2_dma_bba   $804361 ; Literal DMA B-bus address
-.define LZSA2_dma_src   $804362 ; Literal DMA source
-.define LZSA2_dma_len   $804365 ; Literal DMA length
+.define LZ4_dma_p     $804360 ; Literal DMA parameters
+.define LZ4_dma_bba   $804361 ; Literal DMA B-bus address
+.define LZ4_dma_src   $804362 ; Literal DMA source
+.define LZ4_dma_len   $804365 ; Literal DMA length
 
-.define MDMAEN          $80420b ; DMA enable
-.define WMDATA          $802180 ; WRAM data port
-.define WMADD           $802181 ; WRAM address
+.define MDMAEN        $80420b ; DMA enable
+.define WMDATA        $802180 ; WRAM data port
+.define WMADD         $802181 ; WRAM address
 
 .macro readByte
     lda a:0,x
@@ -47,29 +42,7 @@ LZSA2_OPT_RETLEN = 1 ; 1 = Return decompressed length in X (adds 6 bytes to code
     inx
 .endmacro
 
-.macro readNibble
-.if LZSA2_OPT_INLINE = 1
-    .a8
-    lsr <LZSA2_nibrdy       ; Nibble ready?
-    bcs :+
-    inc <LZSA2_nibrdy       ; Flag nibble ready
-    readByte                ; Load and store next nibble
-    sta <LZSA2_nibble
-    lsr
-    lsr
-    lsr
-    lsr
-    bra :++
-:   lda <LZSA2_nibble
-    and #$0f
-:
-.else
-    jsr GetNibble
-.endif
-.endmacro
-
-
-; Decompress LZSA2 block
+; Decompress LZ4 block
 ;
 ; In (a8i16):
 ;   x           Source offset
@@ -77,7 +50,7 @@ LZSA2_OPT_RETLEN = 1 ; 1 = Return decompressed length in X (adds 6 bytes to code
 ;   b:a         Destination:Source banks
 ; Out (a8i16):
 ;   x           Decompressed length
-LZSA2_DecompressBlock:
+LZ4_DecompressBlock:
     .a8
     .i16
 
@@ -100,34 +73,34 @@ Setup:
     sep #$20
     .a8
 
-    stz <LZSA2_nibrdy       ; Init state
+    stz <LZ4_nibrdy         ; Init state
 
-.if LZSA2_OPT_RETLEN = 1
+.if LZ4_OPT_RETLEN = 1
     phy                     ; Push destination offset for decompressed length calculation
 .endif
 
-    sta <LZSA2_dma_src+2    ; Source bank -> WRAM data port address
+    sta <LZ4_dma_src+2      ; Source bank -> WRAM data port address
     xba
 
     sta f:WMADD+2           ; Destination bank -> WRAM data port address, match block move
-    sta <LZSA2_mvn+1
-    sta <LZSA2_mvn+2
+    sta <LZ4_mvn+1
+    sta <LZ4_mvn+2
 
     lda #$54                ; Write MVN and return instructions
-    sta <LZSA2_mvn
+    sta <LZ4_mvn
     lda #$6b                ; $60 = RTS, $6b = RTL
-    sta <LZSA2_mvn+$03
+    sta <LZ4_mvn+$03
 
-    stz <LZSA2_dma_p        ; Set literal copy DMA parameters: CPU->MMIO, auto increment
+    stz <LZ4_dma_p          ; Set literal copy DMA parameters: CPU->MMIO, auto increment
     lda #<WMDATA
-    sta <LZSA2_dma_bba
+    sta <LZ4_dma_bba
 
 ;
 ; Get next token from compressed stream
 ;
 ReadToken:
     readByte
-    sta <LZSA2_token
+    sta <LZ4_token
 
 ;
 ; Decode literal length
@@ -168,26 +141,26 @@ DecodeLitLen:
 ;
 CopyLiteral:
     .a16
-    sta <LZSA2_dma_len      ; Set DMA parameters
-    stx <LZSA2_dma_src
+    sta <LZ4_dma_len      ; Set DMA parameters
+    stx <LZ4_dma_src
 
-    sty <LZSA2_tmp          ; Increment destination offset
+    sty <LZ4_tmp          ; Increment destination offset
     clc
-    adc <LZSA2_tmp
+    adc <LZ4_tmp
     tay
 
     sep #$20
     .a8
     lda #(1 << 6)
     sta f:MDMAEN
-    ldx <LZSA2_dma_src
+    ldx <LZ4_dma_src
 
 ;
 ; Decode match offset
 ;
 DecodeMatchOffset:
     .a8
-    lda <LZSA2_token
+    lda <LZ4_token
     asl                     ; Shift X to C
     bcs @LongMatchOffset
     asl                     ; Shift Y to C
@@ -200,7 +173,7 @@ DecodeMatchOffset:
     .a8
     asl                     ; Shift Z to C
     php
-    readNibble
+    ;readNibble
     plp
     rol                     ; Shift nibble, Z into bit 0
     eor #%11100001
@@ -246,7 +219,7 @@ DecodeMatchOffset:
 @MatchOffset111:
     rep #$20
     .a16
-    lda <LZSA2_match
+    lda <LZ4_match
     bra DecodeMatchLen
 
 ; 10Z 13-bit offset:
@@ -256,7 +229,7 @@ DecodeMatchOffset:
     .a8
     asl                     ; Shift Z to C
     php
-    readNibble
+    ;readNibble
     plp
     rol                     ; Shift nibble, Z into bit 0, C = 0
     eor #%11100001
@@ -272,10 +245,10 @@ DecodeMatchOffset:
 ;
 DecodeMatchLen:             ; Match offset in A
     .a16
-    sta <LZSA2_match        ; Store match offset
+    sta <LZ4_match        ; Store match offset
     sep #$20
     .a8
-    lda <LZSA2_token
+    lda <LZ4_token
     and #%00000111          ; Mask match length
     cmp #%00000111
     beq @ExtMatchLen
@@ -298,7 +271,7 @@ DecodeMatchLen:             ; Match offset in A
 ; Copy match via block move
 ;
 ; Length in A
-; Source offset in LZSA2_match
+; Source offset in LZ4_match
 ;
 CopyMatch:
     .a16
@@ -307,12 +280,12 @@ CopyMatch:
 
     tya                     ; Match offset -> X
     clc
-    adc <LZSA2_match
+    adc <LZ4_match
     tax
 
     pla                     ; Restore length -> A
     phb
-    jsl LZSA2_mvn
+    jsl LZ4_mvn
     plb
 
     plx                     ; Restore source offset
@@ -329,7 +302,7 @@ CopyMatch:
 ;
 GetExtLen:
     .a8
-    readNibble
+    ;readNibble
     cmp #$0f
     bcs @LenByte
 
@@ -358,7 +331,7 @@ GetExtLen:
     .a16
     pla                     ; Unwind pushed Y -> A
     pla
-.if LZSA2_OPT_RETLEN = 1
+.if LZ4_OPT_RETLEN = 1
     sec
     sbc 1,s                 ; Start offset on stack
     plx                     ; Unwind
@@ -375,23 +348,4 @@ NibbleLenAdd:
 ByteLenAdd:
     .byte 17, 23
 
-.if LZSA2_OPT_INLINE = 0
-GetNibble:
-    .a8
-    lsr <LZSA2_nibrdy       ; Nibble ready?
-    bcs @NibbleReady
-    inc <LZSA2_nibrdy       ; Flag nibble ready
-    readByte                ; Load and store next nibble
-    sta <LZSA2_nibble
-    lsr
-    lsr
-    lsr
-    lsr
-    rts
-@NibbleReady:
-    lda <LZSA2_nibble
-    and #$0f
-    rts
-.endif
-
-LZSA2_DecompressBlock_END:
+LZ4_DecompressBlock_END:
