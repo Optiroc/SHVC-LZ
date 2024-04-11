@@ -9,6 +9,18 @@ Common characteristics:
 - Uses DMA when copying literal strings.
 - The compressed data or the decompression buffer may not cross bank boundaries.
 
+# LZ4
+
+WIP
+
+```
+Text file, 26582 -> 64115 bytes
+0.466s  137.583KB/s
+
+Tile data, 1263 -> 4096 bytes
+0.014s  296.383KB/s
+```
+
 # LZSA2
 
 [LZSAv2](https://github.com/emmanuel-marty/lzsa) achieves better compression than LZ4 while still being fairly efficient to decode on 8-bit CPUs.
@@ -25,7 +37,7 @@ Text file, 26582 -> 64115 bytes
 
 Tile data, 1263 -> 4096 bytes
   SHVC-LZSA2 decompressor:
-    Master clocks:    419886   0.012s  209.511KB/s
+    Master clocks:    419886   0.020s  209.511KB/s
     CPU cycles:        62946
   Reference decompressor:
     Master clocks:   2148992   0.100s  40.936KB/s

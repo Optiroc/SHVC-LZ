@@ -20,6 +20,8 @@ Main:
     ;   x           Source offset
     ;   y           Destination offset
     ;   b:a         Destination:Source banks
+    ldx #Compressed_Length
+    stx LZ4_Length_w
     ldy #.loword(Destination)
     ldx #.loword(Compressed)
     lda #^Destination
@@ -34,6 +36,8 @@ Main:
 .segment "RODATA"
 Compressed:
     .incbin "../../test_data/abam.txt.lz4"
+Compressed_END:
+Compressed_Length = Compressed_END - Compressed
 
 .segment "BSS7F"
 Destination:
