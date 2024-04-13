@@ -6,9 +6,10 @@
 ;   Smallest: 327 bytes
 ;   Inlining adds 35 bytes
 ;   Return value adds 6 bytes
-; Decompression speed: 100-350 KB/s
-;   Tile data: ~200 KB/s
-;   Text: ~100 KB/s
+;
+; Decompression speed (KB/s)
+;   Mean      Median    Min       Max
+;   186.946   188.834   95.300    348.218
 
 .p816
 .smart -
@@ -95,7 +96,6 @@ Setup:
     sta f:WMADD             ; Destination offset -> WRAM data port address
     lda #$4300              ; Set direct page at CPU MMIO area
     tcd
-
     pla
     sep #$20
     .a8

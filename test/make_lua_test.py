@@ -119,16 +119,12 @@ end
 
 function {ID}_benchmarkEnd(address, value)
   local state = emu.getState()
-  local xtal = state["clockRate"]
   local clocks_end = state["masterClock"]
   local cpu_cycles_end = state["cpu.cycleCount"]
-
   local clocks_total = clocks_end - {ID}_clocks_start
-  local seconds = clocks_total / xtal
   local cpu_cycles_total = cpu_cycles_end - {ID}_cpu_cycles_start
-  print("benchmark: {NAME}")
-  print(" > master clocks: "..clocks_total.." ("..seconds.."s)")
-  print(" > cpu cycles:    "..cpu_cycles_total)
+  print("clocks="..clocks_total)
+  print("cycles="..cpu_cycles_total)
   emu.stop(0) --SUCCESS
 end
 
@@ -137,13 +133,11 @@ end
 emu.addMemoryCallback({ID}_benchmarkStart, emu.callbackType.exec, {ID}_startAddr)
 emu.addMemoryCallback({ID}_benchmarkEnd, emu.callbackType.exec, {ID}_endAddr)
 """
-    if len(parameters) != 2:
+    if len(parameters) != 1:
         raise ValueError("bench parameters malformed ({})".format(parameters))
-    label, name = parameters
+    label = parameters[0]
     id = make_id()
-    return template.replace("{ID}", id)\
-      .replace("{NAME}", name)\
-      .replace("{LABEL}", label)
+    return template.replace("{ID}", id).replace("{LABEL}", label)
 
 
 def make_size(parameters):
@@ -160,6 +154,21 @@ print("code size: {LABEL} = 0x"..string.format("%x", {ID}_size).." ("..{ID}_size
     return template.replace("{ID}", id)\
       .replace("{LABEL}", label)
 
+def make_test(cmd, parameters):
+    if cmd == "assert_state": return make_assert_state(parameters)
+    if cmd == "assert_range": return make_assert_range(parameters)
+    if cmd == "bench": return make_benchmark(parameters)
+    if cmd == "done": return make_done(parameters)
+    if cmd == "size": return make_size(parameters)
+    else: return ""
+
+def make_lua_tests(tests):
+    output = make_boilerplate()
+    for test in tests:
+        parameters = test.split(":")
+        cmd = parameters.pop(0)
+        output += make_test(cmd, parameters)
+    return output
 
 def main():
     try:
@@ -172,12 +181,7 @@ def main():
         for arg in argv:
             parameters = arg.split(":")
             cmd = parameters.pop(0)
-            if cmd == "assert_state": output += make_assert_state(parameters)
-            if cmd == "assert_range": output += make_assert_range(parameters)
-            if cmd == "bench": output += make_benchmark(parameters)
-            if cmd == "done": output += make_done(parameters)
-            if cmd == "size": output += make_size(parameters)
-
+            output += make_test(cmd, parameters)
         print(output)
         sys.exit(0)
 

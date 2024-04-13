@@ -1,25 +1,25 @@
 ; SHVC-LZ
 ; David Lindecrantz <optiroc@me.com>
 ;
-; LZ4 example usage
+; LZ4 test runner
+
+.include "shvc_cpu.inc"
+.include "shvc_mmio.inc"
 
 .p816
 .smart -
 .feature c_comments
 
-.autoimport
+.import Compressed, Compressed_Length, LZ4_DecompressBlock, LZ4_Length_w
 .export Main
 
 Main:
     .a8
     .i16
+    nop
 
+Benchmark_START:
     ; Set source/destination
-    ;
-    ; LZ4_DecompressBlock requires the following parameters:
-    ;   x           Source offset
-    ;   y           Destination offset
-    ;   b:a         Destination:Source banks
     ldx #Compressed_Length
     stx LZ4_Length_w
     ldy #.loword(Destination)
@@ -30,14 +30,14 @@ Main:
 
     jsl LZ4_DecompressBlock
 
-:   wai
+Benchmark_END:
+    nop
+Asserts_END:
+    nop
+Tests_DONE:
+    nop
+:   nop
     bra :-
-
-.segment "RODATA"
-Compressed:
-    .incbin "../../test/data/short.txt.lz4"
-Compressed_END:
-Compressed_Length = Compressed_END - Compressed
 
 .segment "BSS7F"
 Destination:

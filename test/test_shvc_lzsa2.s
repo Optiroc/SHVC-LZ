@@ -1,7 +1,7 @@
-; SHVC-LZSA2
+; SHVC-LZ
 ; David Lindecrantz <optiroc@me.com>
 ;
-; Test!
+; LZSA2 test runner
 
 .include "shvc_cpu.inc"
 .include "shvc_mmio.inc"

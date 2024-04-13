@@ -33,7 +33,7 @@ Main:
 
 .segment "RODATA"
 Compressed:
-    .incbin "../../test_data/abam.txt.lzsa2"
+    .incbin "../../test/data/short.txt.lzsa2"
 
 .segment "BSS7F"
 Destination:

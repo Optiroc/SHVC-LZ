@@ -57,6 +57,11 @@
 :
 .endmac
 
+; Push return address
+.macro phr addr
+    pea addr - 1
+.endmac
+
 ; Relative subroutine call
 .macro rsc addr
     per * + 4

@@ -3,7 +3,10 @@
 ;
 ; LZ4 decompressor for Super Famicom/Nintendo
 ; Code size: ? to ? bytes
-; Decompression speed: ? KB/s
+;
+; Decompression speed (KB/s)
+;   Mean      Median    Min       Max
+;   257.450   277.310   131.781   400.881
 
 .p816
 .smart -
@@ -13,6 +16,7 @@
 
 LZ4_OPT_INLINE = 1 ; 1 = Inline functions (adds ? bytes to code size)
 LZ4_OPT_MAPMODE = 1 ; 0 = Code linked at bank with mode 20 type mapping, 1 = mode 21 type mapping
+LZ4_OPT_RETLEN = 1 ; 1 = Return decompressed length in X (adds 8 bytes to code size)
 
 LZ4_Length      = $804370 ; Decompressed size
 LZ4_Length_w    = $4370
@@ -68,10 +72,13 @@ Setup:
     sta f:WMADD             ; Destination offset -> WRAM data port address
     lda #$4300              ; Set direct page at CPU MMIO area
     tcd
-
     pla
     sep #$20
     .a8
+
+.if LZ4_OPT_RETLEN = 1
+    phy                     ; Push destination offset for decompressed length calculation
+.endif
 
     sta <LZ4_dma_src+2      ; Source bank -> WRAM data port address
     xba
@@ -201,6 +208,15 @@ CopyMatch:
 ;
 Done:
     .a8
+.if LZ4_OPT_RETLEN = 1
+    rep #$20
+    sec
+    tya
+    sbc 1,s                 ; Start offset on stack
+    plx                     ; Unwind
+    tax
+    sep #$20
+.endif
     plb                     ; Restore DP and DB
     pld
     rtl
