@@ -1,3 +1,4 @@
 build/**
 test_data/*.lz4
 test_data/*.lzsa2
+test_data/*.zx0

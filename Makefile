@@ -1,10 +1,11 @@
-.PHONY: all run test clean clean_tools checks
-.PRECIOUS: %.lz4 %.lzsa2
+.PHONY: all clean clean_tools test
+.PRECIOUS: %.lz4 %.lzsa2 %.zx0
 
 as := tools/cc65/bin/ca65
 ld := tools/cc65/bin/ld65
 lz4 := tools/lz4ultra/lz4ultra
 lzsa := tools/lzsa/lzsa
+zx0 := tools/salvador/salvador
 mesen := /Applications/Mesen.app/Contents/MacOS/Mesen
 make_test := ./make_lua_test.py
 query_dbg := ./query_dbg.py
@@ -48,21 +49,29 @@ $(ld):
 %.lz4: % $(lz4)
 	$(lz4) -v -r $< $@
 
+%.zx0: % $(zx0)
+	$(zx0) -v $< $@
+
 $(lz4):
 	@$(MAKE) -C tools/lz4ultra -j6
 
 $(lzsa):
 	@$(MAKE) -C tools/lzsa -j6
 
+$(zx0):
+	@$(MAKE) -C tools/salvador -j6
+
 clean:
 	@rm -rf $(build_dir)
+
+clean_all:
 	@rm -f $(data_dir)/*.lz4
 	@rm -f $(data_dir)/*.lzsa2
-
-clean_tools:
+	@rm -f $(data_dir)/*.zx0
 	@$(MAKE) clean -C tools/cc65
 	@$(MAKE) clean -C tools/lz4ultra
 	@$(MAKE) clean -C tools/lzsa
+	@$(MAKE) clean -C tools/salvador
 
 #
 # Tests
