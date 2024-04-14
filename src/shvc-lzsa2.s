@@ -2,6 +2,7 @@
 ; David Lindecrantz <optiroc@me.com>
 ;
 ; LZSA2 decompressor for Super Famicom/Nintendo
+;
 ; Code size:
 ;   Smallest: 327 bytes
 ;   Inlining adds 35 bytes

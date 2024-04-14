@@ -2,7 +2,10 @@
 ; David Lindecrantz <optiroc@me.com>
 ;
 ; LZ4 decompressor for Super Famicom/Nintendo
-; Code size: ? to ? bytes
+;
+; Code size:
+;   Smallest: 185 bytes
+;   Return value adds 11 bytes
 ;
 ; Decompression speed (KB/s)
 ;   Mean      Median    Min       Max
@@ -14,9 +17,8 @@
 
 .export LZ4_DecompressBlock, LZ4_Length, LZ4_Length_w
 
-LZ4_OPT_INLINE = 1 ; 1 = Inline functions (adds ? bytes to code size)
 LZ4_OPT_MAPMODE = 1 ; 0 = Code linked at bank with mode 20 type mapping, 1 = mode 21 type mapping
-LZ4_OPT_RETLEN = 1 ; 1 = Return decompressed length in X (adds 8 bytes to code size)
+LZ4_OPT_RETLEN = 0 ; 1 = Return decompressed length in X (adds 11 bytes to code size)
 
 LZ4_Length      = $804370 ; Decompressed size
 LZ4_Length_w    = $4370
