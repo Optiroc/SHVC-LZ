@@ -16,11 +16,15 @@ LZ4           Mean    Median       Min       Max
   Ratio      2.603     2.308     1.741     7.334
   Speed    203.169   181.089   131.781   400.881
 
+LZSA1         Mean    Median       Min       Max
+  Ratio      2.810     2.433     1.891     8.266
+  Speed    191.465   169.462   128.906   394.609
+
 LZSA2         Mean    Median       Min       Max
   Ratio      3.040     2.651     2.117     8.551
   Speed    143.313   120.267    95.300   348.218
 ```
-[Full statistics here](Statistics.md)
+[Full statistics](Statistics.md)
 
 ## LZ4
 
@@ -28,9 +32,15 @@ LZSA2         Mean    Median       Min       Max
 
 [Decompressor source](https://github.com/Optiroc/SHVC-LZ/blob/main/src/shvc-lz4.s)
 
+## LZSA1
+
+[LZSAv1](https://github.com/emmanuel-marty/lzsa) achieves better compression than LZ4 while still being very efficient to decode on 8-bit CPUs.
+
+[Decompressor source](https://github.com/Optiroc/SHVC-LZ/blob/main/src/shvc-lzsa1.s)
+
 ## LZSA2
 
-[LZSAv2](https://github.com/emmanuel-marty/lzsa) achieves better compression than LZ4 while still being fairly efficient to decode on 8-bit CPUs. Of the decompressors included in this collection it has the largest code size, which is due to the somewhat involved [block format](https://github.com/emmanuel-marty/lzsa/blob/master/BlockFormat_LZSA2.md). 
+[LZSAv2](https://github.com/emmanuel-marty/lzsa) achieves better compression than LZSAv1 while still being fairly efficient to decode on 8-bit CPUs. Of the decompressors included in this collection it has the largest code size, which is due to the somewhat involved [block format](https://github.com/emmanuel-marty/lzsa/blob/master/BlockFormat_LZSA2.md). 
 
 [Decompressor source](https://github.com/Optiroc/SHVC-LZ/blob/main/src/shvc-lzsa2.s)
 
@@ -54,9 +64,8 @@ Text file, 26582 -> 64115 bytes
 ```
 
 ## Future work
-- Implement [LZSA1](https://github.com/emmanuel-marty/lzsa) decoder.
 - Implement [ZX0](https://github.com/einar-saukas/ZX0) decoder.
-- Better test data set.
+- Improve test data set.
 
 ## Dependencies
 - [lz4ultra](https://github.com/emmanuel-marty/lz4ultra) compressor by Emmanuel Marty

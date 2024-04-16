@@ -1,5 +1,5 @@
 .PHONY: all clean clean_tools test
-.PRECIOUS: %.lz4 %.lzsa2 %.zx0
+.PRECIOUS: %.lz4 %.lzsa1 %.lzsa2 %.zx0
 
 as := tools/cc65/bin/ca65
 ld := tools/cc65/bin/ld65
@@ -16,28 +16,31 @@ ld_script := link.cfg
 inc := $(wildcard include/*.inc)
 
 common_obj_list := boot/boot.o boot/init.o boot/header.o
-lz4_obj := $(addprefix $(obj_dir)/,$(common_obj_list) shvc-lz4.o boot/main-lz4.o)
-lzsa2_obj := $(addprefix $(obj_dir)/,$(common_obj_list) shvc-lzsa2.o boot/main-lzsa2.o)
 
-default: $(build_dir)/shcv_lz4.sfc $(build_dir)/shcv_lzsa2.sfc
+default: $(build_dir)/shcv_lz4.sfc $(build_dir)/shcv_lzsa1.sfc $(build_dir)/shcv_lzsa2.sfc
 
 all: clean default
 
+data := $(data_dir)/short.txt.lz4 $(data_dir)/short.txt.lzsa1 $(data_dir)/short.txt.lzsa2
+
+lz4_obj := $(addprefix $(obj_dir)/,$(common_obj_list) shvc-lz4.o boot/main-lz4.o)
 $(build_dir)/shcv_lz4.sfc: $(ld_script) Makefile $(ld) $(lz4_obj)
 	$(ld) --dbgfile $(basename $@).dbg -o $@ --config $(ld_script) $(lz4_obj)
 
+lzsa1_obj := $(addprefix $(obj_dir)/,$(common_obj_list) shvc-lzsa1.o boot/main-lzsa1.o)
+$(build_dir)/shcv_lzsa1.sfc: $(ld_script) Makefile $(ld) $(lzsa1_obj)
+	$(ld) --dbgfile $(basename $@).dbg -o $@ --config $(ld_script) $(lzsa1_obj)
+
+lzsa2_obj := $(addprefix $(obj_dir)/,$(common_obj_list) shvc-lzsa2.o boot/main-lzsa2.o)
 $(build_dir)/shcv_lzsa2.sfc: $(ld_script) Makefile $(ld) $(lzsa2_obj)
 	$(ld) --dbgfile $(basename $@).dbg -o $@ --config $(ld_script) $(lzsa2_obj)
 
-$(obj_dir)/%.o: $(src_dir)/%.s $(inc) $(data_dir)/short.txt.lz4 $(data_dir)/short.txt.lzsa2 Makefile $(as)
+$(obj_dir)/%.o: $(src_dir)/%.s $(inc) $(data) Makefile $(as)
 	@mkdir -p $(@D)
 	$(as) -I include --debug-info -o $@ $<
 
-$(as):
-	@$(MAKE) -C tools/cc65 ca65 -j6
-
-$(ld):
-	@$(MAKE) -C tools/cc65 ld65 -j6
+%.lzsa1: % $(lzsa)
+	$(lzsa) -v -f1 -r $< $@
 
 %.lzsa2: % $(lzsa)
 	$(lzsa) -v -f2 -r $< $@
@@ -47,6 +50,12 @@ $(ld):
 
 %.zx0: % $(zx0)
 	$(zx0) -v $< $@
+
+$(as):
+	@$(MAKE) -C tools/cc65 ca65 -j6
+
+$(ld):
+	@$(MAKE) -C tools/cc65 ld65 -j6
 
 $(lz4):
 	@$(MAKE) -C tools/lz4ultra -j6

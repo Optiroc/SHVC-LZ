@@ -44,6 +44,8 @@ def test():
     print("```")
     print_stats(stats, "lz4")
     print()
+    print_stats(stats, "lzsa1")
+    print()
     print_stats(stats, "lzsa2")
     print("```")
     print()
@@ -52,6 +54,8 @@ def run_tests(data_file, stats):
     print("## {}".format(data_file))
     print("```")
     run_lz4_test(data_file, stats)
+    print()
+    run_lzsa1_test(data_file, stats)
     print()
     run_lzsa2_test(data_file, stats)
     print("```")
@@ -150,6 +154,41 @@ build/test.sfc: $(tmp_obj) $(ld_script) $(ld) Makefile
     if r.returncode != 0:
         print(r.stdout.decode())
         raise RuntimeError("failed to build test.sfc with data file '{}.lz4'".format(data_name))
+
+# -----------------------------------------------------------------------------
+# lzsa1 support
+
+def run_lzsa1_test(data_name, stats):
+    make_lzsa1_test_rom(data_name)
+    data_path = "test/data/{}".format(data_name)
+    lua = make_lua_tests([
+        "bench:Benchmark",
+        "assert_state:Asserts_END:[cpu.x]:{}".format(os.path.getsize(data_path)),
+        "assert_range:Asserts_END:Destination:{}".format(data_path),
+        "done:Tests_DONE"
+    ])
+    res = run_test_rom("test", lua)
+    collect_test_report(data_name, "lzsa1", res, stats)
+    cleanup_test()
+
+def make_lzsa1_test_rom(data_name):
+    makefile = """
+include Makefile
+
+data_file := {{DATA_NAME}}.lzsa1
+tmp_list := boot/boot.o boot/init.o boot/header.o shvc-lzsa1.o test_shvc_lzsa1.o $(data_file).data.o
+tmp_obj := $(addprefix $(obj_dir)/,$(tmp_list))
+
+build/test.sfc: $(tmp_obj) $(ld_script) $(ld) Makefile
+	$(ld) --dbgfile $(basename $@).dbg -o $@ --config $(ld_script) $(tmp_obj)
+""".replace("{{DATA_NAME}}", data_name)
+
+    open("test.make", mode="w", encoding="utf-8").write(makefile)
+    r = subprocess.run(["make", "-f", "test.make", "build/test.sfc"], stdout=subprocess.PIPE)
+    os.remove("test.make")
+    if r.returncode != 0:
+        print(r.stdout.decode())
+        raise RuntimeError("failed to build test.sfc with data file '{}.lzsa1'".format(data_name))
 
 # -----------------------------------------------------------------------------
 # lzsa2 support

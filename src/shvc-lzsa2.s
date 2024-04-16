@@ -22,21 +22,21 @@ LZSA2_OPT_RETLEN = 1 ; 1 = Return decompressed length in X (adds 6 bytes to code
 
 .export LZSA2_DecompressBlock
 
-.define LZSA2_token     $804370 ; 1 Current token
-.define LZSA2_nibble    $804371 ; 1 Current nibble
-.define LZSA2_nibrdy    $804372 ; 1 Nibble ready
-.define LZSA2_match     $804373 ; 2 Previous match offset
-.define LZSA2_mvn       $804375 ; 4 Match block move (mvn + banks + return)
-.define LZSA2_tmp       $804379 ; 3 Temporary storage
+LZSA2_token     = $804370 ; 1 Current token
+LZSA2_nibble    = $804371 ; 1 Current nibble
+LZSA2_nibrdy    = $804372 ; 1 Nibble ready
+LZSA2_match     = $804373 ; 2 Previous match offset
+LZSA2_mvn       = $804375 ; 4 Match block move (mvn + banks + return)
+LZSA2_tmp       = $804379 ; 3 Temporary storage
 
-.define LZSA2_dma_p     $804360 ; Literal DMA parameters
-.define LZSA2_dma_bba   $804361 ; Literal DMA B-bus address
-.define LZSA2_dma_src   $804362 ; Literal DMA source
-.define LZSA2_dma_len   $804365 ; Literal DMA length
+LZSA2_dma_p     = $804360 ; Literal DMA parameters
+LZSA2_dma_bba   = $804361 ; Literal DMA B-bus address
+LZSA2_dma_src   = $804362 ; Literal DMA source
+LZSA2_dma_len   = $804365 ; Literal DMA length
 
-.define MDMAEN          $80420b ; DMA enable
-.define WMDATA          $802180 ; WRAM data port
-.define WMADD           $802181 ; WRAM address
+MDMAEN          = $80420b ; DMA enable
+WMDATA          = $802180 ; WRAM data port
+WMADD           = $802181 ; WRAM address
 
 .macro readByte
     lda a:0,x
