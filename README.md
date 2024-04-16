@@ -10,9 +10,17 @@ Common characteristics:
 - Uses DMA when copying literal strings.
 - The compressed data or the decompression buffer may not cross bank boundaries.
 
-[Full statistics](Statistics.md) of decompression speeds and ratios.
+Statistics (speeds in KB/s on a Super Nintendo @ 3.58MHz):
+```
+LZ4           Mean    Median       Min       Max
+  Ratio      2.603     2.308     1.741     7.334
+  Speed    203.169   181.089   131.781   400.881
 
-SHVC-LZ is developed by David Lindecrantz and distributed under the terms of the [MIT license](./LICENSE).
+LZSA2         Mean    Median       Min       Max
+  Ratio      3.040     2.651     2.117     8.551
+  Speed    143.313   120.267    95.300   348.218
+```
+[Full statistics here](Statistics.md)
 
 ## LZ4
 
@@ -58,3 +66,6 @@ Text file, 26582 -> 64115 bytes
 - [Mesen](https://github.com/SourMesen/Mesen2) by Sour (for running tests and benchmarks)
 
 All dependencies except Mesen are included in this repository.
+
+##
+SHVC-LZ is developed by David Lindecrantz and distributed under the terms of the [MIT license](./LICENSE).
