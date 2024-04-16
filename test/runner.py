@@ -9,13 +9,25 @@ from make_lua_test import make_lua_tests
 
 CLOCK_RATE = 21477270
 MESEN = "/Applications/Mesen.app/Contents/MacOS/Mesen"
-SEPARATOR = "----------------------------------------"
 
 # -----------------------------------------------------------------------------
 
 def test():
     stats = {}
     data_files = [
+        "calgary/obj1",
+        "calgary/paper1",
+        "calgary/paper3",
+        "calgary/paper4",
+        "calgary/paper5",
+        "calgary/paper6",
+        "calgary/progc",
+        "calgary/progp",
+        "canterbury/cp.html",
+        "canterbury/fields.c",
+        "canterbury/grammar.lsp",
+        "canterbury/sum",
+        "canterbury/xargs.1",
         "map1.bin",
         "tile1.bin",
         "tile2.bin",
@@ -24,27 +36,25 @@ def test():
         "vram1.bin",
         "abam.txt",
         "2889.txt",
-        ]
+    ]
+
     for data_file in data_files:
         run_tests(data_file, stats)
-    print(SEPARATOR)
-    print(SEPARATOR)
-    print("Statistics")
-    print()
+    print("# SHVC-LZ Statistics")
+    print("```")
     print_stats(stats, "lz4")
     print()
     print_stats(stats, "lzsa2")
+    print("```")
     print()
 
 def run_tests(data_file, stats):
-    # return compression ratio and speed, save and print out averages/means
-    print(SEPARATOR)
-    print("File:", data_file)
-    print()
+    print("## {}".format(data_file))
+    print("```")
     run_lz4_test(data_file, stats)
     print()
     run_lzsa2_test(data_file, stats)
-    print()
+    print("```")
 
 # -----------------------------------------------------------------------------
 # test runner

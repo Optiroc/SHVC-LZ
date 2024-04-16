@@ -1,6 +1,7 @@
 __pycache__
 build/**
-test/data/*.lz4
-test/data/*.lzsa2
-test/data/*.zx0
+test/**/*.lz4
+test/**/*.lzsa1
+test/**/*.lzsa2
+test/**/*.zx0
 test.make

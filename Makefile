@@ -59,9 +59,10 @@ $(zx0):
 
 clean:
 	@rm -rf $(build_dir)
-	@rm -f $(data_dir)/*.lz4
-	@rm -f $(data_dir)/*.lzsa2
-	@rm -f $(data_dir)/*.zx0
+	@find $(data_dir) -type f -name "*.lz4" -delete
+	@find $(data_dir) -type f -name "*.lzsa1" -delete
+	@find $(data_dir) -type f -name "*.lzsa2" -delete
+	@find $(data_dir) -type f -name "*.zx0" -delete
 
 clean_all:
 	@rm -rf test/__pycache__
@@ -81,7 +82,7 @@ $(obj_dir)/%.o: test/%.s $(inc) Makefile $(as)
 
 $(obj_dir)/%.data.o: $(data_dir)/% Makefile $(as)
 	@mkdir -p $(@D)
-	@$(make_data_src) $(obj_dir)/$*.data.s ../../$(data_dir)/$*
+	@$(make_data_src) $(obj_dir)/$*.data.s $(abspath $(data_dir))/$*
 	$(as) -I include --debug-info -o $@ $(obj_dir)/$*.data.s
 	@rm -f $(obj_dir)/$*.data.s
 

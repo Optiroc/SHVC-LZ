@@ -18,7 +18,7 @@
 .export LZ4_DecompressBlock, LZ4_Length, LZ4_Length_w
 
 LZ4_OPT_MAPMODE = 1 ; 0 = Code linked at bank with mode 20 type mapping, 1 = mode 21 type mapping
-LZ4_OPT_RETLEN = 0 ; 1 = Return decompressed length in X (adds 11 bytes to code size)
+LZ4_OPT_RETLEN = 1 ; 1 = Return decompressed length in X (adds 11 bytes to code size)
 
 LZ4_Length      = $804370 ; Decompressed size
 LZ4_Length_w    = $4370
