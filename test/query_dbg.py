@@ -28,14 +28,14 @@ def get_value(parameters, dbg):
         raise ValueError("value parameters malformed ({})".format(parameters))
     name = parameters[0]
     value = dbg[name]["val"]
-    print("{} = 0x{:02x} ({})".format(name, value, value))
+    print("{} value = 0x{:02x} ({})".format(name, value, value))
 
 def get_size(parameters, dbg):
     if len(parameters) != 1:
         raise ValueError("size parameters malformed ({})".format(parameters))
     label = parameters[0]
     size = dbg[label + "_END"]["val"] - dbg[label]["val"]
-    print("{} = 0x{:02x} ({})".format(label, size, size))
+    print("{} size = 0x{:02x} ({})".format(label, size, size))
     return ""
 
 def main():

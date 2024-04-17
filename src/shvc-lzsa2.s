@@ -3,22 +3,27 @@
 ;
 ; LZSA2 decompressor for Super Famicom/Nintendo
 ;
-; Code size:
-;   Smallest: 327 bytes
-;   Inlining adds 35 bytes
-;   Return value adds 6 bytes
+; Code size
+;   Base: 298 bytes
+;   LZSA2_OPT_MAPMODE=1 adds 1 byte
+;   LZSA2_OPT_RETLEN=1 adds 6 bytes
+;   LZSA2_OPT_INLINE=1 adds 58 bytes
 ;
 ; Decompression speed (KB/s)
+; LZSA2_OPT_INLINE=1
 ;   Mean      Median    Min       Max
-;   186.946   188.834   95.300    348.218
+;   144.438   121.212   96.235    349.174
+; LZSA2_OPT_INLINE=0
+;   Mean      Median    Min       Max
+;   135.225   111.927   89.145    340.540
 
 .p816
 .smart -
 .feature c_comments
 
-LZSA2_OPT_INLINE = 1 ; 1 = Inline functions (adds 35 bytes to code size)
-LZSA2_OPT_MAPMODE = 1 ; 0 = Code linked at bank with mode 20 type mapping, 1 = mode 21 type mapping
-LZSA2_OPT_RETLEN = 1 ; 1 = Return decompressed length in X (adds 6 bytes to code size)
+LZSA2_OPT_MAPMODE = 0 ; Set to 1 if code will be linked in bank without RAM/MMIO in lower half
+LZSA2_OPT_RETLEN  = 1 ; Set to 1 to enable decompressed length in X on return (adds 6 bytes to code size)
+LZSA2_OPT_INLINE  = 1 ; Set to 1 to enable code inlining (adds 58 bytes to code size)
 
 .export LZSA2_DecompressBlock
 
@@ -80,6 +85,10 @@ WMADD           = $802181 ; WRAM address
 ; Out (a8i16):
 ;   x           Decompressed length
 LZSA2_DecompressBlock:
+.if LZSA2_OPT_MAPMODE = 0
+    .assert ($40 & ^LZSA2_DecompressBlock = 0), error, "LZSA2_OPT_MAPMODE=0 but code is linked in bank 0x40-0x7D/0xC0-0xFF"
+.endif
+
     .a8
     .i16
 
@@ -116,7 +125,11 @@ Setup:
 
     lda #$54                ; Write MVN and return instructions
     sta <LZSA2_mvn
-    lda #$6b                ; $60 = RTS, $6b = RTL
+.if LZSA2_OPT_MAPMODE = 0
+    lda #$60                ; RTS
+.else
+    lda #$6b                ; RTL
+.endif
     sta <LZSA2_mvn+$03
 
     stz <LZSA2_dma_p        ; Set literal copy DMA parameters: CPU->MMIO, auto increment
@@ -136,6 +149,7 @@ ReadToken:
 DecodeLitLen:
     and #%00011000          ; Mask literal type
     beq DecodeMatchOffset   ; No literal
+.if LZSA2_OPT_INLINE = 1
     cmp #%00010000
     beq @LitLen2
     bpl @ExtLitLen
@@ -160,12 +174,29 @@ DecodeLitLen:
     ldy #0
     jsr GetExtLen
     ply
+.else
+    ; LZSA2_OPT_INLINE = 0
+    cmp #%00011000
+    beq @ExtLitLen
+@ShortLitLen:
+    lsr
+    lsr
+    lsr
+    rep #$20
+    .a16
+    and #$00ff
+    bra CopyLiteral
+@ExtLitLen:
+    phy
+    ldy #0
+    jsr GetExtLen
+    ply
+.endif
 
 ;
 ; Copy literal via DMA (CPU bus -> WMDATA)
 ;
-; Length in A
-; Offset in X
+; Length in A, offset in X, C=0
 ;
 CopyLiteral:
     .a16
@@ -173,7 +204,6 @@ CopyLiteral:
     stx <LZSA2_dma_src
 
     sty <LZSA2_tmp          ; Increment destination offset
-    clc
     adc <LZSA2_tmp
     tay
 
@@ -203,12 +233,11 @@ DecodeMatchOffset:
     php
     readNibble
     plp
-    rol                     ; Shift nibble, Z into bit 0
+    rol                     ; Shift nibble, Z to bit 0
     eor #%11100001
     xba
     lda #$ff
     xba
-    rep #$20
     bra DecodeMatchLen
 
 ; 01Z 9-bit offset:
@@ -225,7 +254,6 @@ DecodeMatchOffset:
     rol
     eor #$ff
     xba
-    rep #$20
     bra DecodeMatchLen
 
 @LongMatchOffset:
@@ -265,13 +293,12 @@ DecodeMatchOffset:
     dec
     xba
     readByte
-    rep #$20
-    .a16
 
 ;
 ; Decode match length
 ;
 DecodeMatchLen:             ; Match offset in A
+    rep #$20
     .a16
     sta <LZSA2_match        ; Store match offset
     sep #$20
@@ -313,7 +340,11 @@ CopyMatch:
 
     pla                     ; Restore length -> A
     phb
+.if LZSA2_OPT_MAPMODE = 0
+    jsr .loword(LZSA2_mvn)
+.else
     jsl LZSA2_mvn
+.endif
     plb
 
     plx                     ; Restore source offset

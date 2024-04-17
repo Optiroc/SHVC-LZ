@@ -1,4 +1,4 @@
-.PHONY: all clean clean_tools test
+.PHONY: all clean clean_tools test report
 .PRECIOUS: %.lz4 %.lzsa1 %.lzsa2 %.zx0
 
 as := tools/cc65/bin/ca65
@@ -6,6 +6,7 @@ ld := tools/cc65/bin/ld65
 lz4 := tools/lz4ultra/lz4ultra
 lzsa := tools/lzsa/lzsa
 zx0 := tools/salvador/salvador
+query_dbg := test/query_dbg.py
 
 src_dir := src
 build_dir := build
@@ -79,6 +80,11 @@ clean_all:
 	@$(MAKE) clean -C tools/lz4ultra
 	@$(MAKE) clean -C tools/lzsa
 	@$(MAKE) clean -C tools/salvador
+
+report: $(build_dir)/shcv_lz4.sfc $(build_dir)/shcv_lzsa1.sfc $(build_dir)/shcv_lzsa2.sfc
+	@$(query_dbg) $(build_dir)/shcv_lz4.dbg size:LZ4_DecompressBlock
+	@$(query_dbg) $(build_dir)/shcv_lzsa1.dbg size:LZSA1_DecompressBlock
+	@$(query_dbg) $(build_dir)/shcv_lzsa2.dbg size:LZSA2_DecompressBlock
 
 # Tests
 

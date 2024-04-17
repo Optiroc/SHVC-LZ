@@ -3,13 +3,14 @@
 ;
 ; LZ4 decompressor for Super Famicom/Nintendo
 ;
-; Code size:
-;   Smallest: 185 bytes
-;   Return value adds 11 bytes
+; Code size
+;   Base: 183 bytes
+;   LZ4_OPT_MAPMODE=1 adds 1 byte
+;   LZ4_OPT_RETLEN=1 adds 11 bytes
 ;
 ; Decompression speed (KB/s)
 ;   Mean      Median    Min       Max
-;   257.450   277.310   131.781   400.881
+;   205.236   183.023   133.517   402.392
 
 .p816
 .smart -
@@ -17,16 +18,16 @@
 
 .export LZ4_DecompressBlock, LZ4_Length, LZ4_Length_w
 
-LZ4_OPT_MAPMODE = 1 ; 0 = Code linked at bank with mode 20 type mapping, 1 = mode 21 type mapping
-LZ4_OPT_RETLEN = 1 ; 1 = Return decompressed length in X (adds 11 bytes to code size)
+LZ4_OPT_MAPMODE = 0 ; Set to 1 if code will be linked in bank without RAM/MMIO in lower half
+LZ4_OPT_RETLEN  = 1 ; Set to 1 to enable decompressed length in X on return
 
 LZ4_Length      = $804370 ; Decompressed size
 LZ4_Length_w    = $4370
-
 LZ4_token       = $804372 ; 1 Current token
 LZ4_match       = $804373 ; 2 Match offset
 LZ4_mvn         = $804375 ; 4 Match block move (mvn + banks + return)
 LZ4_tmp         = $804379 ; Temporary storage
+
 LZ4_dma_p       = $804360 ; Literal DMA parameters
 LZ4_dma_bba     = $804361 ; Literal DMA B-bus address
 LZ4_dma_src     = $804362 ; Literal DMA source
@@ -57,6 +58,10 @@ WMADD           = $802181 ; WRAM address
 ; Out (a8i16):
 ;   x           Decompressed length
 LZ4_DecompressBlock:
+.if LZ4_OPT_MAPMODE = 0
+    .assert ($40 & ^LZ4_DecompressBlock = 0), error, "LZ4_OPT_MAPMODE=0 but code is linked in bank 0x40-0x7D/0xC0-0xFF"
+.endif
+
     .a8
     .i16
 
@@ -91,7 +96,11 @@ Setup:
 
     lda #$54                ; Write MVN and return instructions
     sta <LZ4_mvn
-    lda #$6b                ; $60 = RTS, $6b = RTL
+.if LZ4_OPT_MAPMODE = 0
+    lda #$60                ; RTS
+.else
+    lda #$6b                ; RTL
+.endif
     sta <LZ4_mvn+$03
 
     stz <LZ4_dma_p          ; Set literal copy DMA parameters: CPU->MMIO, auto increment
@@ -127,8 +136,7 @@ DecodeLitLen:
 ;
 ; Copy literal via DMA (CPU bus -> WMDATA)
 ;
-; Length in A
-; Offset in X
+; Length in A, offset in Y, C=0
 ;
 CopyLiteral:
     .a16
@@ -195,7 +203,11 @@ CopyMatch:
 
     pla                     ; Restore length -> A
     phb
+.if LZ4_OPT_MAPMODE = 0
+    jsr .loword(LZ4_mvn)
+.else
     jsl LZ4_mvn
+.endif
     plb
 
     plx                     ; Restore source offset
@@ -246,8 +258,7 @@ AddLength:
     .a16
     beq :-
 
-    pla                     ; Pull summed length
-    clc                     ; TODO: Can carry be set here?
+    pla                     ; Pull summed length, C=0
     rts
 
 LZ4_DecompressBlock_END:

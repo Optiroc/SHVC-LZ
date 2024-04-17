@@ -3,16 +3,21 @@
 ;
 ; LZSA1 decompressor for Super Famicom/Nintendo
 ;
-; Code size:
-;   Smallest: 211 bytes
-;   Return value adds 6 bytes
+; Code size
+;   Base: 202 bytes
+;   LZSA1_OPT_MAPMODE=1 adds 1 byte
+;   LZSA1_OPT_RETLEN=1 adds 7 bytes
+;
+; Decompression speed (KB/s)
+;   Mean      Median    Min       Max
+;   194.060   172.119   131.160   396.615
 
 .p816
 .smart -
 .feature c_comments
 
-LZSA1_OPT_MAPMODE = 1 ; 0 = Code linked at bank with mode 20 type mapping, 1 = mode 21 type mapping
-LZSA1_OPT_RETLEN = 1 ; 1 = Return decompressed length in X (adds 7 bytes to code size)
+LZSA1_OPT_MAPMODE = 0 ; Set to 1 if code will be linked in bank without RAM/MMIO in lower half
+LZSA1_OPT_RETLEN  = 1 ; Set to 1 to enable decompressed length in X on return
 
 .export LZSA1_DecompressBlock
 
@@ -44,6 +49,10 @@ WMADD           = $802181 ; WRAM address
 ; Out (a8i16):
 ;   x           Decompressed length
 LZSA1_DecompressBlock:
+.if LZSA1_OPT_MAPMODE = 0
+    .assert ($40 & ^LZSA1_DecompressBlock = 0), error, "LZSA1_OPT_MAPMODE=0 but code is linked in bank 0x40-0x7D/0xC0-0xFF"
+.endif
+
     .a8
     .i16
 
@@ -78,7 +87,11 @@ Setup:
 
     lda #$54                ; Write MVN and return instructions
     sta <LZSA1_mvn
-    lda #$6b                ; $60 = RTS, $6b = RTL
+.if LZSA1_OPT_MAPMODE = 0
+    lda #$60                ; RTS
+.else
+    lda #$6b                ; RTL
+.endif
     sta <LZSA1_mvn+$03
 
     stz <LZSA1_dma_p        ; Set literal copy DMA parameters: CPU->MMIO, auto increment
@@ -114,8 +127,7 @@ DecodeLitLen:
 ;
 ; Copy literal via DMA (CPU bus -> WMDATA)
 ;
-; Length in A
-; Offset in X
+; Length in A, offset in X, C=0
 ;
 CopyLiteral:
     .a16
@@ -123,7 +135,6 @@ CopyLiteral:
     stx <LZSA1_dma_src
 
     sty <LZSA1_tmp          ; Increment destination offset
-    clc
     adc <LZSA1_tmp
     tay
 
@@ -185,7 +196,11 @@ CopyMatch:
 
     pla                     ; Restore length -> A
     phb
+.if LZSA1_OPT_MAPMODE = 0
+    jsr .loword(LZSA1_mvn)
+.else
     jsl LZSA1_mvn
+.endif
     plb
 
     plx                     ; Restore source offset

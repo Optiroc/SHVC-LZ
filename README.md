@@ -14,15 +14,15 @@ Statistics (speeds in KB/s on a Super Nintendo @ 3.58MHz):
 ```
 LZ4           Mean    Median       Min       Max
   Ratio      2.603     2.308     1.741     7.334
-  Speed    203.169   181.089   131.781   400.881
+  Speed    205.236   183.023   133.517   402.392
 
 LZSA1         Mean    Median       Min       Max
   Ratio      2.810     2.433     1.891     8.266
-  Speed    191.465   169.462   128.906   394.609
+  Speed    194.060   172.119   131.160   396.615
 
 LZSA2         Mean    Median       Min       Max
   Ratio      3.040     2.651     2.117     8.551
-  Speed    143.313   120.267    95.300   348.218
+  Speed    144.438   121.212    96.235   349.174
 ```
 [Full statistics](Statistics.md)
 
@@ -64,8 +64,10 @@ Text file, 26582 -> 64115 bytes
 ```
 
 ## Future work
-- Implement [ZX0](https://github.com/einar-saukas/ZX0) decoder.
-- Improve test data set.
+- Implement [ZX0](https://github.com/einar-saukas/ZX0) decoder
+- Improve test data set
+- Include inlining on/off variants in tests and statistics
+- Add optional bank crossing ability 
 
 ## Dependencies
 - [lz4ultra](https://github.com/emmanuel-marty/lz4ultra) compressor by Emmanuel Marty
