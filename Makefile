@@ -18,11 +18,11 @@ inc := $(wildcard include/*.inc)
 
 common_obj_list := boot/boot.o boot/init.o boot/header.o
 
-default: $(build_dir)/shcv_lz4.sfc $(build_dir)/shcv_lzsa1.sfc $(build_dir)/shcv_lzsa2.sfc
+default: $(build_dir)/shcv_lz4.sfc $(build_dir)/shcv_lzsa1.sfc $(build_dir)/shcv_lzsa2.sfc $(build_dir)/shcv_zx0.sfc
 
 all: clean default
 
-data := $(data_dir)/short.txt.lz4 $(data_dir)/short.txt.lzsa1 $(data_dir)/short.txt.lzsa2
+data := $(data_dir)/short.txt.lz4 $(data_dir)/short.txt.lzsa1 $(data_dir)/short.txt.lzsa2 $(data_dir)/short.txt.zx0
 
 lz4_obj := $(addprefix $(obj_dir)/,$(common_obj_list) shvc-lz4.o boot/main-lz4.o)
 $(build_dir)/shcv_lz4.sfc: $(ld_script) Makefile $(ld) $(lz4_obj)
@@ -35,6 +35,10 @@ $(build_dir)/shcv_lzsa1.sfc: $(ld_script) Makefile $(ld) $(lzsa1_obj)
 lzsa2_obj := $(addprefix $(obj_dir)/,$(common_obj_list) shvc-lzsa2.o boot/main-lzsa2.o)
 $(build_dir)/shcv_lzsa2.sfc: $(ld_script) Makefile $(ld) $(lzsa2_obj)
 	$(ld) --dbgfile $(basename $@).dbg -o $@ --config $(ld_script) $(lzsa2_obj)
+
+zx0_obj := $(addprefix $(obj_dir)/,$(common_obj_list) shvc-zx0.o boot/main-zx0.o)
+$(build_dir)/shcv_zx0.sfc: $(ld_script) Makefile $(ld) $(zx0_obj)
+	$(ld) --dbgfile $(basename $@).dbg -o $@ --config $(ld_script) $(zx0_obj)
 
 $(obj_dir)/%.o: $(src_dir)/%.s $(inc) $(data) Makefile $(as)
 	@mkdir -p $(@D)
@@ -81,10 +85,11 @@ clean_all:
 	@$(MAKE) clean -C tools/lzsa
 	@$(MAKE) clean -C tools/salvador
 
-report: $(build_dir)/shcv_lz4.sfc $(build_dir)/shcv_lzsa1.sfc $(build_dir)/shcv_lzsa2.sfc
-	@$(query_dbg) $(build_dir)/shcv_lz4.dbg size:LZ4_DecompressBlock
-	@$(query_dbg) $(build_dir)/shcv_lzsa1.dbg size:LZSA1_DecompressBlock
-	@$(query_dbg) $(build_dir)/shcv_lzsa2.dbg size:LZSA2_DecompressBlock
+report: $(build_dir)/shcv_lz4.sfc $(build_dir)/shcv_lzsa1.sfc $(build_dir)/shcv_lzsa2.sfc $(build_dir)/shcv_zx0.sfc
+	@$(query_dbg) $(build_dir)/shcv_lz4.dbg size:LZ4_Decompress
+	@$(query_dbg) $(build_dir)/shcv_lzsa1.dbg size:LZSA1_Decompress
+	@$(query_dbg) $(build_dir)/shcv_lzsa2.dbg size:LZSA2_Decompress
+	@$(query_dbg) $(build_dir)/shcv_zx0.dbg size:ZX0_Decompress
 
 # Tests
 

@@ -10,7 +10,7 @@
 .smart -
 .feature c_comments
 
-.import Compressed, Compressed_Length, LZ4_DecompressBlock, LZ4_Length_w
+.import Compressed, Compressed_Length, LZ4_Decompress, LZ4_Length_w
 .export Main
 
 Main:
@@ -28,7 +28,7 @@ Benchmark_START:
     xba
     lda #^Compressed
 
-    jsl LZ4_DecompressBlock
+    jsl LZ4_Decompress
 
 Benchmark_END:
     nop

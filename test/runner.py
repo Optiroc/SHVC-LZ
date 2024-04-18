@@ -47,6 +47,8 @@ def test():
     print_stats(stats, "lzsa1")
     print()
     print_stats(stats, "lzsa2")
+    print()
+    print_stats(stats, "zx0")
     print("```")
     print()
 
@@ -58,6 +60,8 @@ def run_tests(data_file, stats):
     run_lzsa1_test(data_file, stats)
     print()
     run_lzsa2_test(data_file, stats)
+    print()
+    run_zx0_test(data_file, stats)
     print("```")
 
 # -----------------------------------------------------------------------------
@@ -115,9 +119,9 @@ def print_stats(stats, compressor):
     return
 
 def cleanup_test():
-    os.remove("build/test.sfc")
-    os.remove("build/test.lua")
-    os.remove("build/test.dbg")
+    rm("build/test.sfc")
+    rm("build/test.lua")
+    rm("build/test.dbg")
 
 # -----------------------------------------------------------------------------
 # lz4 support
@@ -226,11 +230,50 @@ build/test.sfc: $(tmp_obj) $(ld_script) $(ld) Makefile
         raise RuntimeError("failed to build test.sfc with data file '{}.lzsa2'".format(data_name))
 
 # -----------------------------------------------------------------------------
+# zx0 support
+
+def run_zx0_test(data_name, stats):
+    make_zx0_test_rom(data_name)
+    data_path = "test/data/{}".format(data_name)
+    lua = make_lua_tests([
+        "bench:Benchmark",
+        "assert_state:Asserts_END:[cpu.x]:{}".format(os.path.getsize(data_path)),
+        "assert_range:Asserts_END:Destination:{}".format(data_path),
+        "done:Tests_DONE"
+    ])
+    res = run_test_rom("test", lua)
+    collect_test_report(data_name, "zx0", res, stats)
+    cleanup_test()
+
+def make_zx0_test_rom(data_name):
+    makefile = """
+include Makefile
+
+data_file := {{DATA_NAME}}.zx0
+tmp_list := boot/boot.o boot/init.o boot/header.o shvc-zx0.o test_shvc_zx0.o $(data_file).data.o
+tmp_obj := $(addprefix $(obj_dir)/,$(tmp_list))
+
+build/test.sfc: $(tmp_obj) $(ld_script) $(ld) Makefile
+	$(ld) --dbgfile $(basename $@).dbg -o $@ --config $(ld_script) $(tmp_obj)
+""".replace("{{DATA_NAME}}", data_name)
+
+    open("test.make", mode="w", encoding="utf-8").write(makefile)
+    r = subprocess.run(["make", "-f", "test.make", "build/test.sfc"], stdout=subprocess.PIPE)
+    os.remove("test.make")
+    if r.returncode != 0:
+        print(r.stdout.decode())
+        raise RuntimeError("failed to build test.sfc with data file '{}.zx0'".format(data_name))
+
+# -----------------------------------------------------------------------------
 # utility functions, command line interface
 
 def make_dir(path: str):
     if not os.path.exists(path):
         os.makedirs(path)
+
+def rm(path: str):
+    if os.path.isfile(path):
+        os.remove(path)
 
 def main():
     try:

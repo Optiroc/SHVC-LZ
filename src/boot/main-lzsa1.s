@@ -1,7 +1,7 @@
 ; SHVC-LZ
 ; David Lindecrantz <optiroc@me.com>
 ;
-; LZSA1 example usage
+; SHVC-LZSA1 example usage
 
 .p816
 .smart -
@@ -16,7 +16,7 @@ Main:
 
     ; Set source/destination
     ;
-    ; LZSA1_DecompressBlock requires the following parameters:
+    ; LZSA1_Decompress requires the following parameters:
     ;   x           Source offset
     ;   y           Destination offset
     ;   b:a         Destination:Source banks
@@ -26,7 +26,7 @@ Main:
     xba
     lda #^Compressed
 
-    jsl LZSA1_DecompressBlock
+    jsl LZSA1_Decompress
 
 :   wai
     bra :-

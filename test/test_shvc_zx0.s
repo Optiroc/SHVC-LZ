@@ -1,7 +1,7 @@
 ; SHVC-LZ
 ; David Lindecrantz <optiroc@me.com>
 ;
-; LZSA2 test runner
+; ZX0 test runner
 
 .include "shvc_cpu.inc"
 .include "shvc_mmio.inc"
@@ -10,7 +10,7 @@
 .smart -
 .feature c_comments
 
-.import Compressed, LZSA2_Decompress
+.import Compressed, ZX0_Decompress
 .export Main
 
 Main:
@@ -26,7 +26,7 @@ Benchmark_START:
     xba
     lda #^Compressed
 
-    jsl LZSA2_Decompress
+    jsl ZX0_Decompress
 
 Benchmark_END:
     nop

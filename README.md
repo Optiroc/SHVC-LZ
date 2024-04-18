@@ -1,20 +1,20 @@
 # SHVC-LZ
 
-A collection of decoders for various modern variants of Lempel-Ziv style compression targeting the Super Famicom/Nintendo system.
+A collection of decoders for various modern variants of Lempel-Ziv style compression targeting the Super Famicom/Nintendo system. Written for the [ca65 assembler](https://cc65.github.io/doc/ca65.html), but should be easy to port to other assemblers.
 
 Common characteristics:
-- Designed for speed over code size.
-- Designed to run from ROM – no self-modifying code.
-- Full 24-bit addresses for source and destination are freely set at the call site.
-- Uses DMA registers for temporary variables allowing for faster access than RAM.
-- Uses DMA when copying literal strings.
-- The compressed data or the decompression buffer may not cross bank boundaries.
+- Designed for speed over code size
+- Designed to run from ROM – no self-modifying code
+- Full 24-bit addresses for source and destination can be freely set at the call site
+- Uses DMA registers for temporary variables allowing for faster access than RAM
+- Uses DMA to copy literal strings
+- The compressed data or the decompression buffer may not cross bank boundaries
 
 Statistics (speeds in KB/s on a Super Nintendo @ 3.58MHz):
 ```
 LZ4           Mean    Median       Min       Max
   Ratio      2.603     2.308     1.741     7.334
-  Speed    205.236   183.023   133.517   402.392
+  Speed    205.245   183.024   133.518   402.480
 
 LZSA1         Mean    Median       Min       Max
   Ratio      2.810     2.433     1.891     8.266
@@ -23,6 +23,10 @@ LZSA1         Mean    Median       Min       Max
 LZSA2         Mean    Median       Min       Max
   Ratio      3.040     2.651     2.117     8.551
   Speed    144.438   121.212    96.235   349.174
+
+ZX0           Mean    Median       Min       Max
+  Ratio      3.217     2.718     2.176     9.799
+  Speed     92.579    76.333    55.811   258.012
 ```
 [Full statistics](Statistics.md)
 
@@ -63,8 +67,13 @@ Text file, 26582 -> 64115 bytes
     CPU cycles:      5558506
 ```
 
+## ZX0
+
+[ZX0](https://github.com/einar-saukas/ZX0) has the best compression ratio of the schemes included in this collection, which is achieved by encoding the length/match tokens in an [interlaced](https://github.com/einar-saukas/Zeta-Xi-Code?tab=readme-ov-file#factor-r) [Elias gamma coded](https://en.wikipedia.org/wiki/Elias_gamma_coding) bit stream. The bit twiddling involved accounts for the slower speed compared to the pure byte aligned (nibble in the case of LZSA2) accesses needed by the other decompressors. But it is still quite fast, and the decompressor has the smallest byte count.
+
+[Decompressor source](https://github.com/Optiroc/SHVC-LZ/blob/main/src/shvc-zx0.s)
+
 ## Future work
-- Implement [ZX0](https://github.com/einar-saukas/ZX0) decoder
 - Improve test data set
 - Include inlining on/off variants in tests and statistics
 - Add optional bank crossing ability 

@@ -19,11 +19,11 @@
 LZSA1_OPT_MAPMODE = 0 ; Set to 1 if code will be linked in bank without RAM/MMIO in lower half
 LZSA1_OPT_RETLEN  = 1 ; Set to 1 to enable decompressed length in X on return
 
-.export LZSA1_DecompressBlock
+.export LZSA1_Decompress
 
 LZSA1_token     = $804370 ; 1 Current token
-LZSA1_match     = $804371 ; 2 Match offset
-LZSA1_mvn       = $804373 ; 4 Match block move (mvn + banks + return)
+LZSA1_match     = $804371 ; 2 Offset
+LZSA1_mvn       = $804373 ; 4 Block move (mvn + banks + return)
 LZSA1_tmp       = $804377 ; 3 Temporary storage
 
 LZSA1_dma_p     = $804360 ; Literal DMA parameters
@@ -35,7 +35,7 @@ MDMAEN          = $80420b ; DMA enable
 WMDATA          = $802180 ; WRAM data port
 WMADD           = $802181 ; WRAM address
 
-.macro readByte
+.macro ReadByte
     lda a:0,x
     inx
 .endmacro
@@ -48,9 +48,9 @@ WMADD           = $802181 ; WRAM address
 ;   b:a         Destination:Source banks
 ; Out (a8i16):
 ;   x           Decompressed length
-LZSA1_DecompressBlock:
+LZSA1_Decompress:
 .if LZSA1_OPT_MAPMODE = 0
-    .assert ($40 & ^LZSA1_DecompressBlock = 0), error, "LZSA1_OPT_MAPMODE=0 but code is linked in bank 0x40-0x7D/0xC0-0xFF"
+    .assert ($40 & ^LZSA1_Decompress = 0), error, "LZSA1_OPT_MAPMODE=0 but code is linked in bank 0x40-0x7D/0xC0-0xFF"
 .endif
 
     .a8
@@ -102,7 +102,7 @@ Setup:
 ; Get next token from compressed stream
 ;
 ReadToken:
-    readByte
+    ReadByte
     sta <LZSA1_token
 
 ;
@@ -149,13 +149,13 @@ CopyLiteral:
 ;
 DecodeMatchOffset:
     .a8
-    readByte
+    ReadByte
     sta <LZSA1_match
     lda #$ff
     bit <LZSA1_token
     bpl @ByteOffset
 @WordOffset:
-    readByte
+    ReadByte
 @ByteOffset:
     sta <LZSA1_match+1
 
@@ -218,7 +218,7 @@ CopyMatch:
 AddLength:
     .a8
     pha
-    readByte                ; Read next length byte
+    ReadByte                ; Read next length byte
     clc
     adc 1,s
     sta 1,s
@@ -231,7 +231,7 @@ AddLength:
     rts
 @WordLen:                   ; Two or three bytes
     beq :+
-    readByte                ; Two
+    ReadByte                ; Two
     and #$00ff
     adc #$ff
     rts
@@ -257,4 +257,4 @@ AddLength:
     pld
     rtl
 
-LZSA1_DecompressBlock_END:
+LZSA1_Decompress_END:

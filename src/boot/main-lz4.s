@@ -1,7 +1,7 @@
 ; SHVC-LZ
 ; David Lindecrantz <optiroc@me.com>
 ;
-; LZ4 example usage
+; SHVC-LZ4 example usage
 
 .p816
 .smart -
@@ -16,7 +16,7 @@ Main:
 
     ; Set source/destination
     ;
-    ; LZ4_DecompressBlock requires the following parameters:
+    ; LZ4_Decompress requires the following parameters:
     ;   x           Source offset
     ;   y           Destination offset
     ;   b:a         Destination:Source banks
@@ -28,7 +28,7 @@ Main:
     xba
     lda #^Compressed
 
-    jsl LZ4_DecompressBlock
+    jsl LZ4_Decompress
 
 :   wai
     bra :-

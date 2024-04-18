@@ -16,7 +16,7 @@
 .smart -
 .feature c_comments
 
-.export LZ4_DecompressBlock, LZ4_Length, LZ4_Length_w
+.export LZ4_Decompress, LZ4_Length, LZ4_Length_w
 
 LZ4_OPT_MAPMODE = 0 ; Set to 1 if code will be linked in bank without RAM/MMIO in lower half
 LZ4_OPT_RETLEN  = 1 ; Set to 1 to enable decompressed length in X on return
@@ -24,8 +24,8 @@ LZ4_OPT_RETLEN  = 1 ; Set to 1 to enable decompressed length in X on return
 LZ4_Length      = $804370 ; Decompressed size
 LZ4_Length_w    = $4370
 LZ4_token       = $804372 ; 1 Current token
-LZ4_match       = $804373 ; 2 Match offset
-LZ4_mvn         = $804375 ; 4 Match block move (mvn + banks + return)
+LZ4_match       = $804373 ; 2 Offset
+LZ4_mvn         = $804375 ; 4 Block move (mvn + banks + return)
 LZ4_tmp         = $804379 ; Temporary storage
 
 LZ4_dma_p       = $804360 ; Literal DMA parameters
@@ -37,12 +37,12 @@ MDMAEN          = $80420b ; DMA enable
 WMDATA          = $802180 ; WRAM data port
 WMADD           = $802181 ; WRAM address
 
-.macro readByte
+.macro ReadByte
     lda a:0,x
     inx
 .endmacro
 
-.macro readWord
+.macro ReadWord
     lda a:0,x
     inx
     inx
@@ -57,9 +57,9 @@ WMADD           = $802181 ; WRAM address
 ;   LZ4_Length  Size of compressed data
 ; Out (a8i16):
 ;   x           Decompressed length
-LZ4_DecompressBlock:
+LZ4_Decompress:
 .if LZ4_OPT_MAPMODE = 0
-    .assert ($40 & ^LZ4_DecompressBlock = 0), error, "LZ4_OPT_MAPMODE=0 but code is linked in bank 0x40-0x7D/0xC0-0xFF"
+    .assert ($40 & ^LZ4_Decompress = 0), error, "LZ4_OPT_MAPMODE=0 but code is linked in bank 0x40-0x7D/0xC0-0xFF"
 .endif
 
     .a8
@@ -111,7 +111,7 @@ Setup:
 ; Get next token from compressed stream
 ;
 ReadToken:
-    readByte
+    ReadByte
     sta <LZ4_token
 
 ;
@@ -159,10 +159,10 @@ CopyLiteral:
 DecodeMatchOffset:
     rep #$20
     .a16
-    readWord
-    sta <LZ4_match
+    ReadWord
     cpx <LZ4_Length
     beq Done
+    sta <LZ4_match
 
 ;
 ; Decode match length
@@ -243,7 +243,7 @@ AddLength:
     .a16
     and #$00ff
     pha                     ; Accumulated length at s+1
-:   readByte                ; Read next length byte
+:   ReadByte                ; Read next length byte
     sta <LZ4_tmp
 
     and #$00ff              ; Add to length
@@ -261,4 +261,4 @@ AddLength:
     pla                     ; Pull summed length, C=0
     rts
 
-LZ4_DecompressBlock_END:
+LZ4_Decompress_END:

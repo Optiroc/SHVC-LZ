@@ -1,7 +1,7 @@
 ; SHVC-LZ
 ; David Lindecrantz <optiroc@me.com>
 ;
-; SHVC-LZSA2 example usage
+; SHVC-ZX0 example usage
 
 .p816
 .smart -
@@ -16,7 +16,7 @@ Main:
 
     ; Set source/destination
     ;
-    ; LZSA2_Decompress requires the following parameters:
+    ; ZX0_Decompress requires the following parameters:
     ;   x           Source offset
     ;   y           Destination offset
     ;   b:a         Destination:Source banks
@@ -26,14 +26,16 @@ Main:
     xba
     lda #^Compressed
 
-    jsl LZSA2_Decompress
+    jsl ZX0_Decompress
 
 :   wai
     bra :-
 
 .segment "RODATA"
 Compressed:
-    .incbin "../../test/data/short.txt.lzsa2"
+    .incbin "../../test/data/short.txt.zx0"
+Compressed_END:
+Compressed_Length = Compressed_END - Compressed
 
 .segment "BSS7F"
 Destination:

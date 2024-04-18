@@ -25,13 +25,13 @@ LZSA2_OPT_MAPMODE = 0 ; Set to 1 if code will be linked in bank without RAM/MMIO
 LZSA2_OPT_RETLEN  = 1 ; Set to 1 to enable decompressed length in X on return (adds 6 bytes to code size)
 LZSA2_OPT_INLINE  = 1 ; Set to 1 to enable code inlining (adds 58 bytes to code size)
 
-.export LZSA2_DecompressBlock
+.export LZSA2_Decompress
 
 LZSA2_token     = $804370 ; 1 Current token
 LZSA2_nibble    = $804371 ; 1 Current nibble
 LZSA2_nibrdy    = $804372 ; 1 Nibble ready
-LZSA2_match     = $804373 ; 2 Previous match offset
-LZSA2_mvn       = $804375 ; 4 Match block move (mvn + banks + return)
+LZSA2_match     = $804373 ; 2 Offset
+LZSA2_mvn       = $804375 ; 4 Block move (mvn + banks + return)
 LZSA2_tmp       = $804379 ; 3 Temporary storage
 
 LZSA2_dma_p     = $804360 ; Literal DMA parameters
@@ -43,24 +43,24 @@ MDMAEN          = $80420b ; DMA enable
 WMDATA          = $802180 ; WRAM data port
 WMADD           = $802181 ; WRAM address
 
-.macro readByte
+.macro ReadByte
     lda a:0,x
     inx
 .endmacro
 
-.macro readWord
+.macro ReadWord
     lda a:0,x
     inx
     inx
 .endmacro
 
-.macro readNibble
+.macro ReadNibble
 .if LZSA2_OPT_INLINE = 1
     .a8
     lsr <LZSA2_nibrdy       ; Nibble ready?
     bcs :+
     inc <LZSA2_nibrdy       ; Flag nibble ready
-    readByte                ; Load and store next nibble
+    ReadByte                ; Load and store next nibble
     sta <LZSA2_nibble
     lsr
     lsr
@@ -84,9 +84,9 @@ WMADD           = $802181 ; WRAM address
 ;   b:a         Destination:Source banks
 ; Out (a8i16):
 ;   x           Decompressed length
-LZSA2_DecompressBlock:
+LZSA2_Decompress:
 .if LZSA2_OPT_MAPMODE = 0
-    .assert ($40 & ^LZSA2_DecompressBlock = 0), error, "LZSA2_OPT_MAPMODE=0 but code is linked in bank 0x40-0x7D/0xC0-0xFF"
+    .assert ($40 & ^LZSA2_Decompress = 0), error, "LZSA2_OPT_MAPMODE=0 but code is linked in bank 0x40-0x7D/0xC0-0xFF"
 .endif
 
     .a8
@@ -140,7 +140,7 @@ Setup:
 ; Get next token from compressed stream
 ;
 ReadToken:
-    readByte
+    ReadByte
     sta <LZSA2_token
 
 ;
@@ -155,15 +155,15 @@ DecodeLitLen:
     bpl @ExtLitLen
 
 @LitLen1:                   ; Copy 1 literal
-    readByte
+    ReadByte
     sta f:WMDATA
     iny
     bra DecodeMatchOffset
 
 @LitLen2:                   ; Copy 2 literals
-    readByte
+    ReadByte
     sta f:WMDATA
-    readByte
+    ReadByte
     sta f:WMDATA
     iny
     iny
@@ -231,7 +231,7 @@ DecodeMatchOffset:
     .a8
     asl                     ; Shift Z to C
     php
-    readNibble
+    ReadNibble
     plp
     rol                     ; Shift nibble, Z to bit 0
     eor #%11100001
@@ -247,7 +247,7 @@ DecodeMatchOffset:
     .a8
     asl                     ; Shift Z to C
     php
-    readByte
+    ReadByte
     xba
     plp
     lda #$00
@@ -267,7 +267,7 @@ DecodeMatchOffset:
 @MatchOffset110:
     rep #$20
     .a16
-    readWord
+    ReadWord
     xba
     bra DecodeMatchLen
 
@@ -285,14 +285,14 @@ DecodeMatchOffset:
     .a8
     asl                     ; Shift Z to C
     php
-    readNibble
+    ReadNibble
     plp
     rol                     ; Shift nibble, Z into bit 0, C = 0
     eor #%11100001
     dec
     dec
     xba
-    readByte
+    ReadByte
 
 ;
 ; Decode match length
@@ -361,7 +361,7 @@ CopyMatch:
 ;
 GetExtLen:
     .a8
-    readNibble
+    ReadNibble
     cmp #$0f
     bcs @LenByte
 
@@ -374,7 +374,7 @@ GetExtLen:
     rts
 
 @LenByte:
-    readByte
+    ReadByte
     adc ByteLenAdd,y
     bcc @ByteReady
     beq @Done
@@ -382,7 +382,7 @@ GetExtLen:
 @LenWord:
     rep #$20
     .a16
-    readWord
+    ReadWord
     rts
 
 @Done:
@@ -413,7 +413,7 @@ GetNibble:
     lsr <LZSA2_nibrdy       ; Nibble ready?
     bcs @NibbleReady
     inc <LZSA2_nibrdy       ; Flag nibble ready
-    readByte                ; Load and store next nibble
+    ReadByte                ; Load and store next nibble
     sta <LZSA2_nibble
     lsr
     lsr
@@ -426,4 +426,4 @@ GetNibble:
     rts
 .endif
 
-LZSA2_DecompressBlock_END:
+LZSA2_Decompress_END:
