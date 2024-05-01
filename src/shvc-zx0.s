@@ -4,7 +4,7 @@
 ; ZX0 decompressor for Super Famicom/Nintendo
 ;
 ; Code size
-;   Base: 190 bytes
+;   Base: 188 bytes
 ;   ZX0_OPT_MAPMODE=1 adds 1 byte
 ;   ZX0_OPT_RETLEN=1 adds 8 bytes
 ;
@@ -59,7 +59,6 @@ ZX0_Decompress:
 Setup:
     phd                     ; Save DP and DB
     phb
-
     pha                     ; Source bank -> DB
     plb
 
@@ -83,7 +82,7 @@ Setup:
     sta <ZX0_dma_src+2      ; Source bank -> WRAM data port address
     xba
 
-    sta f:WMADD+2           ; Destination bank -> WRAM data port address, match block move
+    sta f:WMADD+2           ; Destination bank -> WRAM data port address and block move
     sta <ZX0_mvn+1
     sta <ZX0_mvn+2
 
@@ -135,11 +134,7 @@ CopyLiteral:
     ldx <ZX0_dma_src        ; Read new source offset
     pla                     ; Restore bit buffer
 
-;
-; Type 0 or 1 match?
-;
-    ;jsr GetEliasBit
-    asl
+    asl                     ; Type 0 or 1 match?
     bcs DecodeMatchNew
 
 ;
@@ -191,9 +186,6 @@ DecodeMatchNew:
 CopyMatch:
     .a16
     phx                     ; Save stream offset
-
-    rep #$20
-    .a16
     tya                     ; Match offset -> X
     clc
     adc <ZX0_offset
@@ -215,8 +207,7 @@ CopyMatch:
     sep #$20
     .a8
     pla                     ; Restore bit buffer
-
-    asl                     ; Next command literal or match?
+    asl                     ; New match or literal?
     bcs DecodeMatchNew
     bra DecodeLiteral
 
