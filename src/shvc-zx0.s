@@ -4,7 +4,7 @@
 ; ZX0 decompressor for Super Famicom/Nintendo
 ;
 ; Code size
-;   Base: 188 bytes
+;   Base: 187 bytes
 ;   ZX0_OPT_MAPMODE=1 adds 1 byte
 ;   ZX0_OPT_RETLEN=1 adds 8 bytes
 ;
@@ -226,9 +226,8 @@ DecodeGammaLength:
 DecodeGamma:
     asl                     ; Get next bit
     bne GammaCheckBit
-    ReadByte                ; Get new byte
-    sec                     ; Shift out first bit, shift in end marker
-    rol
+    ReadByte                ; Get new byte, C=1 (end marker shifted out)
+    rol                     ; First bit << bit buffer << 1 (end marker)
 GammaCheckBit:              ; Check N-bit
     bcc @AddBit
     rts                     ; N-bit 1: Done

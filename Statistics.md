@@ -14,7 +14,7 @@ LZSA2         Mean    Median       Min       Max
 
 ZX0           Mean    Median       Min       Max
   Ratio      3.217     2.718     2.176     9.799
-  Speed     93.362    77.028    56.358   259.281
+  Speed     93.947    77.565    56.782   260.442
 ```
 ## calgary/obj1
 ```
@@ -37,10 +37,10 @@ LZSA2: 9988 -> 21504 bytes (2.153x)
   Speed:          121.212 KB/s
 
 ZX0: 9597 -> 21504 bytes (2.241x)
-  CPU cycles:      928371
-  Master clocks:  6052776
-  Time:             0.282 s
-  Speed:           76.303 KB/s
+  CPU cycles:      922245
+  Master clocks:  6014368
+  Time:             0.280 s
+  Speed:           76.791 KB/s
 ```
 ## calgary/paper1
 ```
@@ -63,10 +63,10 @@ LZSA2: 20052 -> 53161 bytes (2.651x)
   Speed:          114.661 KB/s
 
 ZX0: 19937 -> 53161 bytes (2.666x)
-  CPU cycles:     2574759
-  Master clocks: 16565558
-  Time:             0.771 s
-  Speed:           68.923 KB/s
+  CPU cycles:     2554505
+  Master clocks: 16440462
+  Time:             0.765 s
+  Speed:           69.448 KB/s
 ```
 ## calgary/paper3
 ```
@@ -89,10 +89,10 @@ LZSA2: 19874 -> 46526 bytes (2.341x)
   Speed:          104.148 KB/s
 
 ZX0: 19656 -> 46526 bytes (2.367x)
-  CPU cycles:     2540812
-  Master clocks: 16324456
-  Time:             0.760 s
-  Speed:           61.212 KB/s
+  CPU cycles:     2520712
+  Master clocks: 16200268
+  Time:             0.754 s
+  Speed:           61.681 KB/s
 ```
 ## calgary/paper4
 ```
@@ -115,10 +115,10 @@ LZSA2: 6222 -> 13286 bytes (2.135x)
   Speed:           97.696 KB/s
 
 ZX0: 5873 -> 13286 bytes (2.262x)
-  CPU cycles:      732263
-  Master clocks:  4721304
-  Time:             0.220 s
-  Speed:           60.438 KB/s
+  CPU cycles:      727113
+  Master clocks:  4689362
+  Time:             0.218 s
+  Speed:           60.850 KB/s
 ```
 ## calgary/paper5
 ```
@@ -141,10 +141,10 @@ LZSA2: 5581 -> 11954 bytes (2.142x)
   Speed:           99.270 KB/s
 
 ZX0: 5265 -> 11954 bytes (2.270x)
-  CPU cycles:      642767
-  Master clocks:  4148224
-  Time:             0.193 s
-  Speed:           61.891 KB/s
+  CPU cycles:      638293
+  Master clocks:  4120414
+  Time:             0.192 s
+  Speed:           62.309 KB/s
 ```
 ## calgary/paper6
 ```
@@ -167,10 +167,10 @@ LZSA2: 14464 -> 38105 bytes (2.634x)
   Speed:          113.558 KB/s
 
 ZX0: 14022 -> 38105 bytes (2.718x)
-  CPU cycles:     1811878
-  Master clocks: 11672732
-  Time:             0.543 s
-  Speed:           70.111 KB/s
+  CPU cycles:     1798200
+  Master clocks: 11588026
+  Time:             0.540 s
+  Speed:           70.624 KB/s
 ```
 ## calgary/progc
 ```
@@ -193,10 +193,10 @@ LZSA2: 14492 -> 39611 bytes (2.733x)
   Speed:          117.067 KB/s
 
 ZX0: 14093 -> 39611 bytes (2.811x)
-  CPU cycles:     1807914
-  Master clocks: 11654682
-  Time:             0.543 s
-  Speed:           72.995 KB/s
+  CPU cycles:     1794344
+  Master clocks: 11570664
+  Time:             0.539 s
+  Speed:           73.525 KB/s
 ```
 ## calgary/progp
 ```
@@ -219,10 +219,10 @@ LZSA2: 11899 -> 49379 bytes (4.150x)
   Speed:          150.829 KB/s
 
 ZX0: 11561 -> 49379 bytes (4.271x)
-  CPU cycles:     1601504
-  Master clocks: 10361670
-  Time:             0.482 s
-  Speed:          102.351 KB/s
+  CPU cycles:     1590292
+  Master clocks: 10292004
+  Time:             0.479 s
+  Speed:          103.044 KB/s
 ```
 ## canterbury/cp.html
 ```
@@ -245,10 +245,10 @@ LZSA2: 9007 -> 24603 bytes (2.732x)
   Speed:          124.808 KB/s
 
 ZX0: 8567 -> 24603 bytes (2.872x)
-  CPU cycles:     1062173
-  Master clocks:  6859934
-  Time:             0.319 s
-  Speed:           77.028 KB/s
+  CPU cycles:     1054481
+  Master clocks:  6812418
+  Time:             0.317 s
+  Speed:           77.565 KB/s
 ```
 ## canterbury/fields.c
 ```
@@ -271,10 +271,10 @@ LZSA2: 3436 -> 11150 bytes (3.245x)
   Speed:          130.869 KB/s
 
 ZX0: 3214 -> 11150 bytes (3.469x)
-  CPU cycles:      413967
-  Master clocks:  2678956
-  Time:             0.125 s
-  Speed:           89.390 KB/s
+  CPU cycles:      411149
+  Master clocks:  2661572
+  Time:             0.124 s
+  Speed:           89.974 KB/s
 ```
 ## canterbury/grammar.lsp
 ```
@@ -297,10 +297,10 @@ LZSA2: 1403 -> 3721 bytes (2.652x)
   Speed:          120.453 KB/s
 
 ZX0: 1304 -> 3721 bytes (2.854x)
-  CPU cycles:      153058
-  Master clocks:   992900
+  CPU cycles:      152108
+  Master clocks:   986944
   Time:             0.046 s
-  Speed:           80.488 KB/s
+  Speed:           80.974 KB/s
 ```
 ## canterbury/sum
 ```
@@ -323,10 +323,10 @@ LZSA2: 12017 -> 38240 bytes (3.182x)
   Speed:          129.328 KB/s
 
 ZX0: 11416 -> 38240 bytes (3.350x)
-  CPU cycles:     1439849
-  Master clocks:  9380386
-  Time:             0.437 s
-  Speed:           87.554 KB/s
+  CPU cycles:     1430565
+  Master clocks:  9321976
+  Time:             0.434 s
+  Speed:           88.103 KB/s
 ```
 ## canterbury/xargs.1
 ```
@@ -349,10 +349,10 @@ LZSA2: 1997 -> 4227 bytes (2.117x)
   Speed:          103.774 KB/s
 
 ZX0: 1842 -> 4227 bytes (2.295x)
-  CPU cycles:      214484
-  Master clocks:  1387868
-  Time:             0.065 s
-  Speed:           65.413 KB/s
+  CPU cycles:      213092
+  Master clocks:  1379132
+  Time:             0.064 s
+  Speed:           65.827 KB/s
 ```
 ## map1.bin
 ```
@@ -375,10 +375,10 @@ LZSA2: 958 -> 8192 bytes (8.551x)
   Speed:          231.775 KB/s
 
 ZX0: 836 -> 8192 bytes (9.799x)
-  CPU cycles:      153219
-  Master clocks:  1000528
-  Time:             0.047 s
-  Speed:          175.849 KB/s
+  CPU cycles:      152337
+  Master clocks:   994984
+  Time:             0.046 s
+  Speed:          176.829 KB/s
 ```
 ## tile1.bin
 ```
@@ -401,10 +401,10 @@ LZSA2: 411 -> 2048 bytes (4.983x)
   Speed:          349.174 KB/s
 
 ZX0: 397 -> 2048 bytes (5.159x)
-  CPU cycles:       25343
-  Master clocks:   169644
+  CPU cycles:       25223
+  Master clocks:   168888
   Time:             0.008 s
-  Speed:          259.281 KB/s
+  Speed:          260.442 KB/s
 ```
 ## tile2.bin
 ```
@@ -427,10 +427,10 @@ LZSA2: 1263 -> 4096 bytes (3.243x)
   Speed:          210.745 KB/s
 
 ZX0: 1171 -> 4096 bytes (3.498x)
-  CPU cycles:      106173
-  Master clocks:   698966
-  Time:             0.033 s
-  Speed:          125.859 KB/s
+  CPU cycles:      105543
+  Master clocks:   694896
+  Time:             0.032 s
+  Speed:          126.596 KB/s
 ```
 ## tile3.bin
 ```
@@ -453,10 +453,10 @@ LZSA2: 3200 -> 8192 bytes (2.560x)
   Speed:          188.220 KB/s
 
 ZX0: 3046 -> 8192 bytes (2.689x)
-  CPU cycles:      243303
-  Master clocks:  1595168
+  CPU cycles:      241759
+  Master clocks:  1585450
   Time:             0.074 s
-  Speed:          110.297 KB/s
+  Speed:          110.973 KB/s
 ```
 ## tile4.bin
 ```
@@ -479,10 +479,10 @@ LZSA2: 3516 -> 8192 bytes (2.330x)
   Speed:          192.830 KB/s
 
 ZX0: 3393 -> 8192 bytes (2.414x)
-  CPU cycles:      235703
-  Master clocks:  1550522
+  CPU cycles:      234251
+  Master clocks:  1541246
   Time:             0.072 s
-  Speed:          113.473 KB/s
+  Speed:          114.156 KB/s
 ```
 ## vram1.bin
 ```
@@ -505,10 +505,10 @@ LZSA2: 3369 -> 9312 bytes (2.764x)
   Speed:          129.946 KB/s
 
 ZX0: 3121 -> 9312 bytes (2.984x)
-  CPU cycles:      364542
-  Master clocks:  2369786
+  CPU cycles:      362164
+  Master clocks:  2354822
   Time:             0.110 s
-  Speed:           84.394 KB/s
+  Speed:           84.931 KB/s
 ```
 ## abam.txt
 ```
@@ -531,10 +531,10 @@ LZSA2: 26582 -> 64115 bytes (2.412x)
   Speed:          106.590 KB/s
 
 ZX0: 26776 -> 64115 bytes (2.394x)
-  CPU cycles:     3516190
-  Master clocks: 22574098
-  Time:             1.051 s
-  Speed:           61.000 KB/s
+  CPU cycles:     3488104
+  Master clocks: 22400136
+  Time:             1.043 s
+  Speed:           61.474 KB/s
 ```
 ## 2889.txt
 ```
@@ -557,8 +557,8 @@ LZSA2: 15450 -> 32893 bytes (2.129x)
   Speed:           96.235 KB/s
 
 ZX0: 15115 -> 32893 bytes (2.176x)
-  CPU cycles:     1951233
-  Master clocks: 12535100
-  Time:             0.584 s
-  Speed:           56.358 KB/s
+  CPU cycles:     1936121
+  Master clocks: 12441476
+  Time:             0.579 s
+  Speed:           56.782 KB/s
 ```
