@@ -21,15 +21,15 @@ LZSA1_OPT_RETLEN  = 1 ; Set to 1 to enable decompressed length in X on return
 
 .export LZSA1_Decompress
 
-LZSA1_token     = $804370 ; 1 Current token
-LZSA1_match     = $804371 ; 2 Offset
-LZSA1_mvn       = $804373 ; 4 Block move (mvn + banks + return)
-LZSA1_tmp       = $804377 ; 3 Temporary storage
+LZSA1_token     = $4370 ; 1 Current token
+LZSA1_match     = $4371 ; 2 Offset
+LZSA1_mvn       = $4373 ; 4 Block move (mvn + banks + return)
+LZSA1_tmp       = $4377 ; 2 Temporary storage
 
-LZSA1_dma_p     = $804360 ; Literal DMA parameters
-LZSA1_dma_bba   = $804361 ; Literal DMA B-bus address
-LZSA1_dma_src   = $804362 ; Literal DMA source
-LZSA1_dma_len   = $804365 ; Literal DMA length
+LZSA1_dma_p     = $4360 ; Literal DMA parameters
+LZSA1_dma_bba   = $4361 ; Literal DMA B-bus address
+LZSA1_dma_src   = $4362 ; Literal DMA source
+LZSA1_dma_len   = $4365 ; Literal DMA length
 
 MDMAEN          = $80420b ; DMA enable
 WMDATA          = $802180 ; WRAM data port

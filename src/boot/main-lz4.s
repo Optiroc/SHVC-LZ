@@ -21,7 +21,7 @@ Main:
     ;   y           Destination offset
     ;   b:a         Destination:Source banks
     ldx #Compressed_Length
-    stx LZ4_Length_w
+    stx LZ4_Length
     ldy #.loword(Destination)
     ldx #.loword(Compressed)
     lda #^Destination

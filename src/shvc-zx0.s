@@ -21,15 +21,15 @@
 ZX0_OPT_MAPMODE = 0 ; Set to 1 if code will be linked in bank without RAM/MMIO in lower half
 ZX0_OPT_RETLEN  = 1 ; Set to 1 to enable decompressed length in X on return
 
-ZX0_length      = $804370 ; 2 Length
-ZX0_offset      = $804372 ; 2 Offset
-ZX0_mvn         = $804374 ; 4 Block move (mvn + banks + return)
-ZX0_tmp         = $804378 ; Temporary storage
+ZX0_length      = $4370 ; 2 Length
+ZX0_offset      = $4372 ; 2 Offset
+ZX0_mvn         = $4374 ; 4 Block move (mvn + banks + return)
+ZX0_tmp         = $4378 ; 2 Temporary storage
 
-ZX0_dma_p       = $804360 ; Literal DMA parameters
-ZX0_dma_bba     = $804361 ; Literal DMA B-bus address
-ZX0_dma_src     = $804362 ; Literal DMA source
-ZX0_dma_len     = $804365 ; Literal DMA length
+ZX0_dma_p       = $4360 ; Literal DMA parameters
+ZX0_dma_bba     = $4361 ; Literal DMA B-bus address
+ZX0_dma_src     = $4362 ; Literal DMA source
+ZX0_dma_len     = $4365 ; Literal DMA length
 
 MDMAEN          = $80420b ; DMA enable
 WMDATA          = $802180 ; WRAM data port

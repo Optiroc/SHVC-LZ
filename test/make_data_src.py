@@ -7,6 +7,8 @@ def make_data_src(path):
 .export Compressed, Compressed_Length
 
 .segment "RODATA"
+Padding:
+    .res $17
 Compressed:
     .incbin "{{PATH}}"
 Compressed_END:

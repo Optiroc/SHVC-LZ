@@ -10,8 +10,10 @@
 .smart -
 .feature c_comments
 
-.import Compressed, Compressed_Length, LZ4_Decompress, LZ4_Length_w
+.import Compressed, Compressed_Length, LZ4_Decompress, LZ4_Length
 .export Main
+
+DESTINATION_PADDING = $36
 
 Main:
     .a8
@@ -21,7 +23,7 @@ Main:
 Benchmark_START:
     ; Set source/destination
     ldx #Compressed_Length
-    stx LZ4_Length_w
+    stx LZ4_Length
     ldy #.loword(Destination)
     ldx #.loword(Compressed)
     lda #^Destination
@@ -40,5 +42,7 @@ Tests_DONE:
     bra :-
 
 .segment "BSS7F"
+Padding:
+    .res DESTINATION_PADDING
 Destination:
-    .res $ffff
+    .res $ffff - DESTINATION_PADDING

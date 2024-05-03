@@ -4,7 +4,7 @@
 ; LZ4 decompressor for Super Famicom/Nintendo
 ;
 ; Code size
-;   Base: 183 bytes
+;   Base: 189 bytes
 ;   LZ4_OPT_MAPMODE=1 adds 1 byte
 ;   LZ4_OPT_RETLEN=1 adds 11 bytes
 ;
@@ -16,22 +16,21 @@
 .smart -
 .feature c_comments
 
-.export LZ4_Decompress, LZ4_Length, LZ4_Length_w
+.export LZ4_Decompress, LZ4_Length
 
 LZ4_OPT_MAPMODE = 0 ; Set to 1 if code will be linked in bank without RAM/MMIO in lower half
 LZ4_OPT_RETLEN  = 1 ; Set to 1 to enable decompressed length in X on return
 
-LZ4_Length      = $804370 ; Decompressed size
-LZ4_Length_w    = $4370
-LZ4_token       = $804372 ; 1 Current token
-LZ4_match       = $804373 ; 2 Offset
-LZ4_mvn         = $804375 ; 4 Block move (mvn + banks + return)
-LZ4_tmp         = $804379 ; Temporary storage
+LZ4_Length      = $4370 ; Decompressed size
+LZ4_token       = $4372 ; 1 Current token
+LZ4_match       = $4373 ; 2 Offset
+LZ4_mvn         = $4375 ; 4 Block move (mvn + banks + return)
+LZ4_tmp         = $4379 ; 2 Temporary storage
 
-LZ4_dma_p       = $804360 ; Literal DMA parameters
-LZ4_dma_bba     = $804361 ; Literal DMA B-bus address
-LZ4_dma_src     = $804362 ; Literal DMA source
-LZ4_dma_len     = $804365 ; Literal DMA length
+LZ4_dma_p       = $4360 ; Literal DMA parameters
+LZ4_dma_bba     = $4361 ; Literal DMA B-bus address
+LZ4_dma_src     = $4362 ; Literal DMA source
+LZ4_dma_len     = $4365 ; Literal DMA length
 
 MDMAEN          = $80420b ; DMA enable
 WMDATA          = $802180 ; WRAM data port
@@ -79,6 +78,10 @@ Setup:
     sta f:WMADD             ; Destination offset -> WRAM data port address
     lda #$4300              ; Set direct page at CPU MMIO area
     tcd
+    txa                     ; Calculate end offset
+    clc
+    adc <LZ4_Length
+    sta <LZ4_Length
     pla
     sep #$20
     .a8

@@ -13,6 +13,8 @@
 .import Compressed, ZX0_Decompress
 .export Main
 
+DESTINATION_PADDING = $36
+
 Main:
     .a8
     .i16
@@ -38,5 +40,7 @@ Tests_DONE:
     bra :-
 
 .segment "BSS7F"
+Padding:
+    .res DESTINATION_PADDING
 Destination:
-    .res $ffff
+    .res $ffff - DESTINATION_PADDING

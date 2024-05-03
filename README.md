@@ -14,7 +14,7 @@ Statistics (speeds in KB/s on a Super Nintendo @ 3.58MHz):
 ```
 LZ4           Mean    Median       Min       Max
   Ratio      2.603     2.308     1.741     7.334
-  Speed    205.245   183.024   133.518   402.480
+  Speed    205.208   183.024   133.512   402.068
 
 LZSA1         Mean    Median       Min       Max
   Ratio      2.810     2.433     1.891     8.266

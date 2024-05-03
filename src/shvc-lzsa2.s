@@ -27,17 +27,17 @@ LZSA2_OPT_INLINE  = 1 ; Set to 1 to enable code inlining (adds 58 bytes to code 
 
 .export LZSA2_Decompress
 
-LZSA2_token     = $804370 ; 1 Current token
-LZSA2_nibble    = $804371 ; 1 Current nibble
-LZSA2_nibrdy    = $804372 ; 1 Nibble ready
-LZSA2_match     = $804373 ; 2 Offset
-LZSA2_mvn       = $804375 ; 4 Block move (mvn + banks + return)
-LZSA2_tmp       = $804379 ; 3 Temporary storage
+LZSA2_token     = $4370 ; 1 Current token
+LZSA2_nibble    = $4371 ; 1 Current nibble
+LZSA2_nibrdy    = $4372 ; 1 Nibble ready
+LZSA2_match     = $4373 ; 2 Offset
+LZSA2_mvn       = $4375 ; 4 Block move (mvn + banks + return)
+LZSA2_tmp       = $4379 ; 2 Temporary storage
 
-LZSA2_dma_p     = $804360 ; Literal DMA parameters
-LZSA2_dma_bba   = $804361 ; Literal DMA B-bus address
-LZSA2_dma_src   = $804362 ; Literal DMA source
-LZSA2_dma_len   = $804365 ; Literal DMA length
+LZSA2_dma_p     = $4360 ; Literal DMA parameters
+LZSA2_dma_bba   = $4361 ; Literal DMA B-bus address
+LZSA2_dma_src   = $4362 ; Literal DMA source
+LZSA2_dma_len   = $4365 ; Literal DMA length
 
 MDMAEN          = $80420b ; DMA enable
 WMDATA          = $802180 ; WRAM data port
