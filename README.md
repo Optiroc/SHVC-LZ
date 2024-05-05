@@ -26,7 +26,7 @@ LZSA2         Mean    Median       Min       Max
 
 ZX0           Mean    Median       Min       Max
   Ratio      3.217     2.718     2.176     9.799
-  Speed     93.947    77.565    56.782   260.442
+  Speed     97.231    80.881    59.540   266.756
 ```
 [Full statistics](Statistics.md)
 

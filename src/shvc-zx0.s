@@ -4,13 +4,18 @@
 ; ZX0 decompressor for Super Famicom/Nintendo
 ;
 ; Code size
-;   Base: 187 bytes
+;   Base: 185 bytes
 ;   ZX0_OPT_MAPMODE=1 adds 1 byte
-;   ZX0_OPT_RETLEN=1 adds 8 bytes
+;   ZX0_OPT_RETLEN=1 adds 10 bytes
+;   ZX0_OPT_INLINE=1 adds 29 bytes
 ;
 ; Decompression speed (KB/s)
+; ZX0_OPT_INLINE=1
 ;   Mean      Median    Min       Max
-;   92.579    76.333    55.811    258.012
+;   97.231    80.881    59.540    266.756
+; ZX0_OPT_INLINE=0
+;   Mean      Median    Min       Max
+;   94.704    78.322    57.422    261.990
 
 .p816
 .smart -
@@ -20,6 +25,7 @@
 
 ZX0_OPT_MAPMODE = 0 ; Set to 1 if code will be linked in bank without RAM/MMIO in lower half
 ZX0_OPT_RETLEN  = 1 ; Set to 1 to enable decompressed length in X on return
+ZX0_OPT_INLINE  = 1 ; Set to 1 to enable code inlining
 
 ZX0_length      = $4370 ; 2 Length
 ZX0_offset      = $4372 ; 2 Offset
@@ -96,10 +102,8 @@ Setup:
     sta <ZX0_mvn+$03
 
     stz <ZX0_dma_p          ; Set literal copy DMA parameters: CPU->MMIO, auto increment
-    lda #<WMDATA
+    lda #$80                ; WMDATA and initialized empty bit buffer
     sta <ZX0_dma_bba
-
-    lda #%10000000          ; Initialize bit buffer (end marker at msb, 0 = first command)
 
 ;
 ; Decode literal
@@ -225,18 +229,46 @@ DecodeGammaLength:
     inc <ZX0_length
 DecodeGamma:
     asl                     ; Get next bit
-    bne GammaCheckBit
-    ReadByte                ; Get new byte, C=1 (end marker shifted out)
-    rol                     ; First bit << bit buffer << 1 (end marker)
+    beq GammaFillBuffer
 GammaCheckBit:              ; Check N-bit
-    bcc @AddBit
-    rts                     ; N-bit 1: Done
-@AddBit:                    ; N-bit 0: Shift in next bit
+    bcs GammaDone
+GammaAddBit:                ; N-bit 0: Shift in next bit
     asl
     rol <ZX0_length
     rol <ZX0_length+1
+.if ZX0_OPT_INLINE = 0
     bra DecodeGamma
+.else
+    asl                     ; Get next bit
+    beq GammaFillBuffer
+    bcs GammaDone
+    asl
+    rol <ZX0_length
+    rol <ZX0_length+1
+    asl                     ; Get next bit
+    beq GammaFillBuffer
+    bcs GammaDone
+    asl
+    rol <ZX0_length
+    rol <ZX0_length+1
+    asl                     ; Get next bit
+    beq GammaFillBuffer
+    bcs GammaDone
+    asl
+    rol <ZX0_length
+    rol <ZX0_length+1
+    asl                     ; Last bit, fall through
+.endif
+GammaFillBuffer:
+    ReadByte                ; C=1 (previous end marker shifted out)
+    rol                     ; Shift out first bit, shift in new end marker
+    bcc GammaAddBit
+GammaDone:
+    rts                     ; N-bit 1: Done
 
+;
+; Decoding done
+;
 Done:
     .a8
     pla                     ; Unwind bit buffer
@@ -245,11 +277,11 @@ Done:
     .a16
     tya                     ; End offset in y
     sbc 1,s                 ; Start offset on stack (C=1)
-    plx                     ; Unwind
-    tax
-.endif
+    plx                     ; Unwind start offset
+    tax                     ; Result -> X
     sep #$20
     .a8
+.endif
     plb                     ; Restore DP and DB
     pld
     rtl

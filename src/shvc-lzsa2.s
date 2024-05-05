@@ -22,8 +22,8 @@
 .feature c_comments
 
 LZSA2_OPT_MAPMODE = 0 ; Set to 1 if code will be linked in bank without RAM/MMIO in lower half
-LZSA2_OPT_RETLEN  = 1 ; Set to 1 to enable decompressed length in X on return (adds 6 bytes to code size)
-LZSA2_OPT_INLINE  = 1 ; Set to 1 to enable code inlining (adds 58 bytes to code size)
+LZSA2_OPT_RETLEN  = 1 ; Set to 1 to enable decompressed length in X on return
+LZSA2_OPT_INLINE  = 1 ; Set to 1 to enable code inlining
 
 .export LZSA2_Decompress
 
