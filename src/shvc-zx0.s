@@ -12,10 +12,10 @@
 ; Decompression speed (KB/s)
 ; ZX0_OPT_INLINE=1
 ;   Mean      Median    Min       Max
-;   98.648    82.068    60.359    269.529
+;   100.045   83.592    61.838    270.151
 ; ZX0_OPT_INLINE=0
 ;   Mean      Median    Min       Max
-;   95.043    78.535    57.505    263.027
+;   96.332    79.928    58.846    263.639
 
 .p816
 .smart -
@@ -192,9 +192,6 @@ CopyMatch:
     plb
 
     plx                     ; Restore source offset
-    tya
-    sta f:WMADD
-
     sep #$20
     .a8
 .if ZX0_OPT_INLINE = 0
@@ -226,8 +223,10 @@ CopyLiteral:
 .endif
     rep #$20
     .a16
+    tya                     ; Set DMA parameters
+    sta f:WMADD
     lda <ZX0_length
-    sta <ZX0_dma_len        ; Set DMA parameters
+    sta <ZX0_dma_len
     stx <ZX0_dma_src
 
     sty <ZX0_tmp            ; Increment destination offset
