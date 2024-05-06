@@ -14,7 +14,7 @@ LZSA2         Mean    Median       Min       Max
 
 ZX0           Mean    Median       Min       Max
   Ratio      3.217     2.718     2.176     9.799
-  Speed     97.231    80.881    59.540   266.756
+  Speed     98.648    82.068    60.359   269.529
 ```
 ## calgary/obj1
 ```
@@ -37,10 +37,10 @@ LZSA2: 9988 -> 21504 bytes (2.153x)
   Speed:          121.212 KB/s
 
 ZX0: 9597 -> 21504 bytes (2.241x)
-  CPU cycles:      894581
-  Master clocks:  5843792
-  Time:             0.272 s
-  Speed:           79.032 KB/s
+  CPU cycles:      881182
+  Master clocks:  5731428
+  Time:             0.267 s
+  Speed:           80.582 KB/s
 ```
 ## calgary/paper1
 ```
@@ -63,10 +63,10 @@ LZSA2: 20052 -> 53161 bytes (2.651x)
   Speed:          114.661 KB/s
 
 ZX0: 19937 -> 53161 bytes (2.666x)
-  CPU cycles:     2426590
-  Master clocks: 15649946
-  Time:             0.729 s
-  Speed:           72.956 KB/s
+  CPU cycles:     2404347
+  Master clocks: 15441260
+  Time:             0.719 s
+  Speed:           73.942 KB/s
 ```
 ## calgary/paper3
 ```
@@ -89,10 +89,10 @@ LZSA2: 19874 -> 46526 bytes (2.341x)
   Speed:          104.148 KB/s
 
 ZX0: 19656 -> 46526 bytes (2.367x)
-  CPU cycles:     2393861
-  Master clocks: 15415924
-  Time:             0.718 s
-  Speed:           64.819 KB/s
+  CPU cycles:     2372488
+  Master clocks: 15211890
+  Time:             0.708 s
+  Speed:           65.689 KB/s
 ```
 ## calgary/paper4
 ```
@@ -115,10 +115,10 @@ LZSA2: 6222 -> 13286 bytes (2.135x)
   Speed:           97.696 KB/s
 
 ZX0: 5873 -> 13286 bytes (2.262x)
-  CPU cycles:      698572
-  Master clocks:  4513032
-  Time:             0.210 s
-  Speed:           63.227 KB/s
+  CPU cycles:      691332
+  Master clocks:  4445398
+  Time:             0.207 s
+  Speed:           64.189 KB/s
 ```
 ## calgary/paper5
 ```
@@ -141,10 +141,10 @@ LZSA2: 5581 -> 11954 bytes (2.142x)
   Speed:           99.270 KB/s
 
 ZX0: 5265 -> 11954 bytes (2.270x)
-  CPU cycles:      614039
-  Master clocks:  3970646
-  Time:             0.185 s
-  Speed:           64.659 KB/s
+  CPU cycles:      607414
+  Master clocks:  3909518
+  Time:             0.182 s
+  Speed:           65.670 KB/s
 ```
 ## calgary/paper6
 ```
@@ -167,10 +167,10 @@ LZSA2: 14464 -> 38105 bytes (2.634x)
   Speed:          113.558 KB/s
 
 ZX0: 14022 -> 38105 bytes (2.718x)
-  CPU cycles:     1714993
-  Master clocks: 11073914
-  Time:             0.516 s
-  Speed:           73.903 KB/s
+  CPU cycles:     1698590
+  Master clocks: 10920990
+  Time:             0.508 s
+  Speed:           74.937 KB/s
 ```
 ## calgary/progc
 ```
@@ -193,10 +193,10 @@ LZSA2: 14492 -> 39611 bytes (2.733x)
   Speed:          117.067 KB/s
 
 ZX0: 14093 -> 39611 bytes (2.811x)
-  CPU cycles:     1711863
-  Master clocks: 11061056
-  Time:             0.515 s
-  Speed:           76.913 KB/s
+  CPU cycles:     1695256
+  Master clocks: 10907568
+  Time:             0.508 s
+  Speed:           77.995 KB/s
 ```
 ## calgary/progp
 ```
@@ -219,10 +219,10 @@ LZSA2: 11899 -> 49379 bytes (4.150x)
   Speed:          150.829 KB/s
 
 ZX0: 11561 -> 49379 bytes (4.271x)
-  CPU cycles:     1521885
-  Master clocks:  9869454
-  Time:             0.460 s
-  Speed:          107.455 KB/s
+  CPU cycles:     1508265
+  Master clocks:  9743672
+  Time:             0.454 s
+  Speed:          108.843 KB/s
 ```
 ## canterbury/cp.html
 ```
@@ -245,10 +245,10 @@ LZSA2: 9007 -> 24603 bytes (2.732x)
   Speed:          124.808 KB/s
 
 ZX0: 8567 -> 24603 bytes (2.872x)
-  CPU cycles:     1009300
-  Master clocks:  6533142
-  Time:             0.304 s
-  Speed:           80.881 KB/s
+  CPU cycles:      998929
+  Master clocks:  6438644
+  Time:             0.300 s
+  Speed:           82.068 KB/s
 ```
 ## canterbury/fields.c
 ```
@@ -271,10 +271,10 @@ LZSA2: 3436 -> 11150 bytes (3.245x)
   Speed:          130.869 KB/s
 
 ZX0: 3214 -> 11150 bytes (3.469x)
-  CPU cycles:      395156
-  Master clocks:  2562706
-  Time:             0.119 s
-  Speed:           93.445 KB/s
+  CPU cycles:      391216
+  Master clocks:  2526598
+  Time:             0.118 s
+  Speed:           94.780 KB/s
 ```
 ## canterbury/grammar.lsp
 ```
@@ -297,10 +297,10 @@ LZSA2: 1403 -> 3721 bytes (2.652x)
   Speed:          120.453 KB/s
 
 ZX0: 1304 -> 3721 bytes (2.854x)
-  CPU cycles:      147480
-  Master clocks:   958408
-  Time:             0.045 s
-  Speed:           83.385 KB/s
+  CPU cycles:      145778
+  Master clocks:   942994
+  Time:             0.044 s
+  Speed:           84.748 KB/s
 ```
 ## canterbury/sum
 ```
@@ -323,10 +323,10 @@ LZSA2: 12017 -> 38240 bytes (3.182x)
   Speed:          129.328 KB/s
 
 ZX0: 11416 -> 38240 bytes (3.350x)
-  CPU cycles:     1387838
-  Master clocks:  9057114
-  Time:             0.422 s
-  Speed:           90.679 KB/s
+  CPU cycles:     1368362
+  Master clocks:  8896424
+  Time:             0.414 s
+  Speed:           92.317 KB/s
 ```
 ## canterbury/xargs.1
 ```
@@ -349,10 +349,10 @@ LZSA2: 1997 -> 4227 bytes (2.117x)
   Speed:          103.774 KB/s
 
 ZX0: 1842 -> 4227 bytes (2.295x)
-  CPU cycles:      206201
-  Master clocks:  1336608
-  Time:             0.062 s
-  Speed:           67.922 KB/s
+  CPU cycles:      203813
+  Master clocks:  1314954
+  Time:             0.061 s
+  Speed:           69.040 KB/s
 ```
 ## map1.bin
 ```
@@ -375,10 +375,10 @@ LZSA2: 958 -> 8192 bytes (8.551x)
   Speed:          231.775 KB/s
 
 ZX0: 836 -> 8192 bytes (9.799x)
-  CPU cycles:      146865
-  Master clocks:   961150
-  Time:             0.045 s
-  Speed:          183.053 KB/s
+  CPU cycles:      145841
+  Master clocks:   951882
+  Time:             0.044 s
+  Speed:          184.836 KB/s
 ```
 ## tile1.bin
 ```
@@ -401,10 +401,10 @@ LZSA2: 411 -> 2048 bytes (4.983x)
   Speed:          349.174 KB/s
 
 ZX0: 397 -> 2048 bytes (5.159x)
-  CPU cycles:       24575
-  Master clocks:   164890
+  CPU cycles:       24365
+  Master clocks:   163194
   Time:             0.008 s
-  Speed:          266.756 KB/s
+  Speed:          269.529 KB/s
 ```
 ## tile2.bin
 ```
@@ -427,10 +427,10 @@ LZSA2: 1263 -> 4096 bytes (3.243x)
   Speed:          210.745 KB/s
 
 ZX0: 1171 -> 4096 bytes (3.498x)
-  CPU cycles:      102929
-  Master clocks:   678712
-  Time:             0.032 s
-  Speed:          129.614 KB/s
+  CPU cycles:      101417
+  Master clocks:   666544
+  Time:             0.031 s
+  Speed:          131.981 KB/s
 ```
 ## tile3.bin
 ```
@@ -453,10 +453,10 @@ LZSA2: 3200 -> 8192 bytes (2.560x)
   Speed:          188.220 KB/s
 
 ZX0: 3046 -> 8192 bytes (2.689x)
-  CPU cycles:      234543
-  Master clocks:  1540748
-  Time:             0.072 s
-  Speed:          114.192 KB/s
+  CPU cycles:      231355
+  Master clocks:  1514196
+  Time:             0.071 s
+  Speed:          116.195 KB/s
 ```
 ## tile4.bin
 ```
@@ -479,10 +479,10 @@ LZSA2: 3516 -> 8192 bytes (2.330x)
   Speed:          192.830 KB/s
 
 ZX0: 3393 -> 8192 bytes (2.414x)
-  CPU cycles:      227922
-  Master clocks:  1502224
-  Time:             0.070 s
-  Speed:          117.121 KB/s
+  CPU cycles:      224628
+  Master clocks:  1474924
+  Time:             0.069 s
+  Speed:          119.289 KB/s
 ```
 ## vram1.bin
 ```
@@ -505,10 +505,10 @@ LZSA2: 3369 -> 9312 bytes (2.764x)
   Speed:          129.946 KB/s
 
 ZX0: 3121 -> 9312 bytes (2.984x)
-  CPU cycles:      350558
-  Master clocks:  2283174
-  Time:             0.106 s
-  Speed:           87.596 KB/s
+  CPU cycles:      346145
+  Master clocks:  2245128
+  Time:             0.105 s
+  Speed:           89.080 KB/s
 ```
 ## abam.txt
 ```
@@ -531,10 +531,10 @@ LZSA2: 26582 -> 64115 bytes (2.412x)
   Speed:          106.590 KB/s
 
 ZX0: 26776 -> 64115 bytes (2.394x)
-  CPU cycles:     3307526
-  Master clocks: 21284022
-  Time:             0.991 s
-  Speed:           64.697 KB/s
+  CPU cycles:     3279376
+  Master clocks: 21011654
+  Time:             0.978 s
+  Speed:           65.536 KB/s
 ```
 ## 2889.txt
 ```
@@ -557,8 +557,8 @@ LZSA2: 15450 -> 32893 bytes (2.129x)
   Speed:           96.235 KB/s
 
 ZX0: 15115 -> 32893 bytes (2.176x)
-  CPU cycles:     1842882
-  Master clocks: 11865202
-  Time:             0.552 s
-  Speed:           59.540 KB/s
+  CPU cycles:     1826073
+  Master clocks: 11704090
+  Time:             0.545 s
+  Speed:           60.359 KB/s
 ```

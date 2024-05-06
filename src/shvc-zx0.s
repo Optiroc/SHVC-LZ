@@ -7,15 +7,15 @@
 ;   Base: 185 bytes
 ;   ZX0_OPT_MAPMODE=1 adds 1 byte
 ;   ZX0_OPT_RETLEN=1 adds 10 bytes
-;   ZX0_OPT_INLINE=1 adds 29 bytes
+;   ZX0_OPT_INLINE=1 adds 35 bytes
 ;
 ; Decompression speed (KB/s)
 ; ZX0_OPT_INLINE=1
 ;   Mean      Median    Min       Max
-;   97.231    80.881    59.540    266.756
+;   98.648    82.068    60.359    269.529
 ; ZX0_OPT_INLINE=0
 ;   Mean      Median    Min       Max
-;   94.704    78.322    57.422    261.990
+;   95.043    78.535    57.505    263.027
 
 .p816
 .smart -
@@ -30,7 +30,7 @@ ZX0_OPT_INLINE  = 1 ; Set to 1 to enable code inlining
 ZX0_length      = $4370 ; 2 Length
 ZX0_offset      = $4372 ; 2 Offset
 ZX0_mvn         = $4374 ; 4 Block move (mvn + banks + return)
-ZX0_tmp         = $4378 ; 2 Temporary storage
+ZX0_tmp         = $4378 ; 3 Temporary storage
 
 ZX0_dma_p       = $4360 ; Literal DMA parameters
 ZX0_dma_bba     = $4361 ; Literal DMA B-bus address
@@ -104,54 +104,29 @@ Setup:
     stz <ZX0_dma_p          ; Set literal copy DMA parameters: CPU->MMIO, auto increment
     lda #$80                ; WMDATA and initialized empty bit buffer
     sta <ZX0_dma_bba
+    bra DecodeLiteral
 
 ;
-; Decode literal
+; Decoding done
 ;
-DecodeLiteral:
+Done:
     .a8
-    jsr DecodeGammaLength
-
-;
-; Copy literal via DMA (CPU bus -> WMDATA)
-;
-; Length in ZX0_length
-;
-CopyLiteral:
-    .a8
-    pha                     ; Save bit buffer
+.if ZX0_OPT_INLINE = 0
+    pla                     ; Unwind bit buffer
+.endif
+.if ZX0_OPT_RETLEN = 1
     rep #$20
     .a16
-    lda <ZX0_length
-    sta <ZX0_dma_len        ; Set DMA parameters
-    stx <ZX0_dma_src
-
-    sty <ZX0_tmp            ; Increment destination offset
-    clc
-    adc <ZX0_tmp
-    tay
-
+    tya                     ; End offset in y
+    sbc 1,s                 ; Start offset on stack (C=1)
+    plx                     ; Unwind start offset
+    tax                     ; Result -> X
     sep #$20
     .a8
-    lda #(1 << 6)
-    sta f:MDMAEN
-    ldx <ZX0_dma_src        ; Read new source offset
-    pla                     ; Restore bit buffer
-
-    asl                     ; Type 0 or 1 match?
-    bcs DecodeMatchNew
-
-;
-; Decode match with current offset
-;
-DecodeMatchReuse:
-    .a8
-    jsr DecodeGammaLength
-    pha                     ; Save bit buffer
-    rep #$20
-    .a16
-    dec <ZX0_length
-    bra CopyMatch
+.endif
+    plb                     ; Restore DP and DB
+    pld
+    rtl
 
 ;
 ; Decode match with new offset
@@ -162,7 +137,11 @@ DecodeMatchNew:
     dec <ZX0_length
     dec <ZX0_length
     jsr DecodeGamma         ; Get offset MSB
+.if ZX0_OPT_INLINE = 0
     pha                     ; Save bit buffer
+.else
+    sta <ZX0_tmp
+.endif
     lda <ZX0_length
     inc
     beq Done
@@ -176,9 +155,17 @@ DecodeMatchNew:
     inc <ZX0_length
     sep #$20
     .a8
+.if ZX0_OPT_INLINE = 0
     pla                     ; Restore bit buffer
-    jsr GammaCheckBit       ; Get match length (first N-bit in C)
+.else
+    lda <ZX0_tmp
+.endif
+    jsr GammaCheckBit       ; Get match length (first n-bit in C)
+.if ZX0_OPT_INLINE = 0
     pha                     ; Save bit buffer
+.else
+    sta <ZX0_tmp
+.endif
     rep #$20
 
 ;
@@ -210,10 +197,72 @@ CopyMatch:
 
     sep #$20
     .a8
+.if ZX0_OPT_INLINE = 0
     pla                     ; Restore bit buffer
-    asl                     ; New match or literal?
+.else
+    lda <ZX0_tmp
+.endif
+    asl                     ; New match or literal
     bcs DecodeMatchNew
-    bra DecodeLiteral
+
+;
+; Decode literal
+;
+DecodeLiteral:
+    .a8
+    jsr DecodeGammaLength
+
+;
+; Copy literal via DMA (CPU bus -> WMDATA)
+;
+; Length in ZX0_length
+;
+CopyLiteral:
+    .a8
+.if ZX0_OPT_INLINE = 0
+    pha                     ; Save bit buffer
+.else
+    sta <ZX0_tmp+2
+.endif
+    rep #$20
+    .a16
+    lda <ZX0_length
+    sta <ZX0_dma_len        ; Set DMA parameters
+    stx <ZX0_dma_src
+
+    sty <ZX0_tmp            ; Increment destination offset
+    clc
+    adc <ZX0_tmp
+    tay
+
+    sep #$20
+    .a8
+    lda #(1 << 6)
+    sta f:MDMAEN
+    ldx <ZX0_dma_src        ; Read new source offset
+.if ZX0_OPT_INLINE = 0
+    pla                     ; Restore bit buffer
+.else
+    lda <ZX0_tmp+2
+.endif
+    asl                     ; Type 0 or 1 match
+    bcs DecodeMatchNew
+
+;
+; Decode match with current offset
+;
+DecodeMatchReuse:
+    .a8
+    jsr DecodeGammaLength
+.if ZX0_OPT_INLINE = 0
+    pha                     ; Save bit buffer
+.else
+    sta <ZX0_tmp
+.endif
+    rep #$20
+    .a16
+    dec <ZX0_length
+    bra CopyMatch
 
 ;
 ; Decode next Elias gamma number
@@ -228,62 +277,42 @@ DecodeGammaLength:
     stz <ZX0_length+1
     inc <ZX0_length
 DecodeGamma:
-    asl                     ; Get next bit
+    asl                     ; Check n-bit 1
     beq GammaFillBuffer
-GammaCheckBit:              ; Check N-bit
+GammaCheckBit:
     bcs GammaDone
-GammaAddBit:                ; N-bit 0: Shift in next bit
-    asl
+GammaAddBit:                ; n-bit = 0 ->
+    asl                     ; shift in next bit
     rol <ZX0_length
     rol <ZX0_length+1
 .if ZX0_OPT_INLINE = 0
     bra DecodeGamma
 .else
-    asl                     ; Get next bit
+    asl                     ; Check n-bit 2
     beq GammaFillBuffer
     bcs GammaDone
     asl
     rol <ZX0_length
     rol <ZX0_length+1
-    asl                     ; Get next bit
+    asl                     ; Check n-bit 3
     beq GammaFillBuffer
     bcs GammaDone
     asl
     rol <ZX0_length
     rol <ZX0_length+1
-    asl                     ; Get next bit
+    asl                     ; Check n-bit 4
     beq GammaFillBuffer
     bcs GammaDone
     asl
     rol <ZX0_length
     rol <ZX0_length+1
-    asl                     ; Last bit, fall through
+    asl                     ; Last bit -> fall through
 .endif
 GammaFillBuffer:
     ReadByte                ; C=1 (previous end marker shifted out)
     rol                     ; Shift out first bit, shift in new end marker
     bcc GammaAddBit
 GammaDone:
-    rts                     ; N-bit 1: Done
-
-;
-; Decoding done
-;
-Done:
-    .a8
-    pla                     ; Unwind bit buffer
-.if ZX0_OPT_RETLEN = 1
-    rep #$20
-    .a16
-    tya                     ; End offset in y
-    sbc 1,s                 ; Start offset on stack (C=1)
-    plx                     ; Unwind start offset
-    tax                     ; Result -> X
-    sep #$20
-    .a8
-.endif
-    plb                     ; Restore DP and DB
-    pld
-    rtl
+    rts                     ; n-bit 1 -> done
 
 ZX0_Decompress_END:
