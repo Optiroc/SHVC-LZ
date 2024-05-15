@@ -4,18 +4,22 @@
 ; LZSA2 decompressor for Super Famicom/Nintendo
 ;
 ; Code size
-;   Base: 298 bytes
+;   Base: 291 bytes
 ;   LZSA2_OPT_MAPMODE=1 adds 1 byte
 ;   LZSA2_OPT_RETLEN=1 adds 6 bytes
-;   LZSA2_OPT_INLINE=1 adds 58 bytes
+;   LZSA2_OPT_INLINE=1 adds 35 bytes
+;   LZSA2_OPT_INLINE=2 adds 64 bytes
 ;
 ; Decompression speed (KB/s)
+; LZSA2_OPT_INLINE=2
+;   Mean      Median    Min       Max
+;   144.596   121.368   96.250    349.974
 ; LZSA2_OPT_INLINE=1
 ;   Mean      Median    Min       Max
-;   144.438   121.212   96.235    349.174
+;   142.593   118.718   95.091    350.219
 ; LZSA2_OPT_INLINE=0
 ;   Mean      Median    Min       Max
-;   135.225   111.927   89.145    340.540
+;   137.805   114.473   91.677    342.555
 
 .p816
 .smart -
@@ -23,7 +27,7 @@
 
 LZSA2_OPT_MAPMODE = 0 ; Set to 1 if code will be linked in bank without RAM/MMIO in lower half
 LZSA2_OPT_RETLEN  = 1 ; Set to 1 to enable decompressed length in X on return
-LZSA2_OPT_INLINE  = 1 ; Set to 1 to enable code inlining
+LZSA2_OPT_INLINE  = 2 ; Set to 1/2 to enable code inlining
 
 .export LZSA2_Decompress
 
@@ -55,7 +59,9 @@ WMADD           = $802181 ; WRAM address
 .endmacro
 
 .macro ReadNibble
-.if LZSA2_OPT_INLINE = 1
+.if LZSA2_OPT_INLINE = 0
+    jsr GetNibble
+.else
     .a8
     lsr <LZSA2_nibrdy       ; Nibble ready?
     bcs :+
@@ -70,8 +76,6 @@ WMADD           = $802181 ; WRAM address
 :   lda <LZSA2_nibble
     and #$0f
 :
-.else
-    jsr GetNibble
 .endif
 .endmacro
 
@@ -102,8 +106,10 @@ Setup:
     rep #$20
     .a16
     pha
+.if LZSA2_OPT_INLINE = 2
     tya
     sta f:WMADD             ; Destination offset -> WRAM data port address
+.endif
     lda #$4300              ; Set direct page at CPU MMIO area
     tcd
     pla
@@ -149,7 +155,7 @@ ReadToken:
 DecodeLitLen:
     and #%00011000          ; Mask literal type
     beq DecodeMatchOffset   ; No literal
-.if LZSA2_OPT_INLINE = 1
+.if LZSA2_OPT_INLINE = 2
     cmp #%00010000
     beq @LitLen2
     bpl @ExtLitLen
@@ -175,7 +181,7 @@ DecodeLitLen:
     jsr GetExtLen
     ply
 .else
-    ; LZSA2_OPT_INLINE = 0
+    ; LZSA2_OPT_INLINE = 0/1
     cmp #%00011000
     beq @ExtLitLen
 @ShortLitLen:
@@ -203,8 +209,11 @@ CopyLiteral:
     sta <LZSA2_dma_len      ; Set DMA parameters
     stx <LZSA2_dma_src
 
-    sty <LZSA2_tmp          ; Increment destination offset
-    adc <LZSA2_tmp
+    tya
+.if LZSA2_OPT_INLINE <> 2
+    sta f:WMADD
+.endif
+    adc <LZSA2_dma_len      ; Increment destination offset
     tay
 
     sep #$20
@@ -348,9 +357,10 @@ CopyMatch:
     plb
 
     plx                     ; Restore source offset
+.if LZSA2_OPT_INLINE = 2
     tya
     sta f:WMADD
-
+.endif
     sep #$20
     jmp ReadToken
 

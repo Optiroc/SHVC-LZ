@@ -4,7 +4,7 @@
 ; LZ4 decompressor for Super Famicom/Nintendo
 ;
 ; Code size
-;   Base: 189 bytes
+;   Base: 182 bytes
 ;   LZ4_OPT_MAPMODE=1 adds 1 byte
 ;   LZ4_OPT_RETLEN=1 adds 11 bytes
 ;
@@ -74,8 +74,6 @@ Setup:
     rep #$20
     .a16
     pha
-    tya
-    sta f:WMADD             ; Destination offset -> WRAM data port address
     lda #$4300              ; Set direct page at CPU MMIO area
     tcd
     txa                     ; Calculate end offset
@@ -145,9 +143,10 @@ CopyLiteral:
     .a16
     sta <LZ4_dma_len        ; Set DMA parameters
     stx <LZ4_dma_src
+    tya
+    sta f:WMADD
 
-    sty <LZ4_tmp            ; Increment destination offset
-    adc <LZ4_tmp
+    adc <LZ4_dma_len        ; Increment destination offset
     tay
 
     sep #$20
@@ -214,9 +213,6 @@ CopyMatch:
     plb
 
     plx                     ; Restore source offset
-    tya
-    sta f:WMADD
-
     sep #$20
     bra ReadToken
 

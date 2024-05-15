@@ -4,7 +4,7 @@
 ; LZSA1 decompressor for Super Famicom/Nintendo
 ;
 ; Code size
-;   Base: 202 bytes
+;   Base: 195 bytes
 ;   LZSA1_OPT_MAPMODE=1 adds 1 byte
 ;   LZSA1_OPT_RETLEN=1 adds 7 bytes
 ;
@@ -66,8 +66,6 @@ Setup:
     rep #$20
     .a16
     pha
-    tya
-    sta f:WMADD             ; Destination offset -> WRAM data port address
     lda #$4300              ; Set direct page at CPU MMIO area
     tcd
     pla
@@ -133,9 +131,10 @@ CopyLiteral:
     .a16
     sta <LZSA1_dma_len      ; Set DMA parameters
     stx <LZSA1_dma_src
+    tya
+    sta f:WMADD
 
-    sty <LZSA1_tmp          ; Increment destination offset
-    adc <LZSA1_tmp
+    adc <LZSA1_dma_len      ; Increment destination offset
     tay
 
     sep #$20
@@ -204,9 +203,6 @@ CopyMatch:
     plb
 
     plx                     ; Restore source offset
-    tya
-    sta f:WMADD
-
     sep #$20
     bra ReadToken
 
