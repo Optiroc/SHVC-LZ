@@ -18,7 +18,7 @@ LZ4           Mean    Median       Min       Max
 
 LZSA1         Mean    Median       Min       Max
   Ratio      2.810     2.433     1.891     8.266
-  Speed    198.097   176.605   135.100   398.657
+  Speed    199.492   177.663   135.193   402.384
 
 LZSA2         Mean    Median       Min       Max
   Ratio      3.040     2.651     2.117     8.551
