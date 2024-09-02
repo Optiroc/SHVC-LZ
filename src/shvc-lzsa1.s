@@ -24,7 +24,7 @@ LZSA1_OPT_RETLEN  = 1 ; Set to 1 to enable decompressed length in X on return
 LZSA1_token     = $4370 ; 1 Current token
 LZSA1_match     = $4371 ; 2 Offset
 LZSA1_mvn       = $4373 ; 4 Block move (mvn + banks + return)
-LZSA1_tmp       = $4377 ; 2 Temporary storage
+LZSA1_tmp       = $4377 ; 1 Temporary storage
 
 LZSA1_dma_p     = $4360 ; Literal DMA parameters
 LZSA1_dma_bba   = $4361 ; Literal DMA B-bus address
@@ -213,12 +213,10 @@ CopyMatch:
 ;
 AddLength:
     .a8
-    pha
+    sta <LZSA1_tmp
     ReadByte                ; Read next length byte
     clc
-    adc 1,s
-    sta 1,s
-    pla
+    adc <LZSA1_tmp
     rep #$20
     .a16
     bcs @WordLen
