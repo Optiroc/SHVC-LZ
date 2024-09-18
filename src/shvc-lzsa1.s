@@ -235,8 +235,6 @@ AddLength:
     inx
     rts
 @Done:
-    rep #$20
-    .a16
     pla                     ; Unwind return address
 .if LZSA1_OPT_RETLEN = 1
     tya                     ; End offset in y
