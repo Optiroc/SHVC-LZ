@@ -4,13 +4,13 @@
 ; LZSA1 decompressor for Super Famicom/Nintendo
 ;
 ; Code size
-;   Base: 193 bytes
+;   Base: 189 bytes
 ;   LZSA1_OPT_MAPMODE=1 adds 1 byte
 ;   LZSA1_OPT_RETLEN=1 adds 7 bytes
 ;
 ; Decompression speed (KB/s)
 ;   Mean      Median    Min       Max
-;   194.060   172.119   131.160   396.615
+;   200.319   178.357   135.252   404.598
 
 .p816
 .smart -
