@@ -4,7 +4,7 @@
 ; LZSA1 decompressor for Super Famicom/Nintendo
 ;
 ; Code size
-;   Base: 195 bytes
+;   Base: 193 bytes
 ;   LZSA1_OPT_MAPMODE=1 adds 1 byte
 ;   LZSA1_OPT_RETLEN=1 adds 7 bytes
 ;

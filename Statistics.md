@@ -6,7 +6,7 @@ LZ4           Mean    Median       Min       Max
 
 LZSA1         Mean    Median       Min       Max
   Ratio      2.810     2.433     1.891     8.266
-  Speed    198.097   176.605   135.100   398.657
+  Speed    199.492   177.663   135.193   402.384
 
 LZSA2         Mean    Median       Min       Max
   Ratio      3.040     2.651     2.117     8.551
@@ -25,10 +25,10 @@ LZ4: 12349 -> 21504 bytes (1.741x)
   Speed:          217.871 KB/s
 
 LZSA1: 11372 -> 21504 bytes (1.891x)
-  CPU cycles:      386476
-  Master clocks:  2598464
-  Time:             0.121 s
-  Speed:          177.739 KB/s
+  CPU cycles:      383965
+  Master clocks:  2580378
+  Time:             0.120 s
+  Speed:          178.984 KB/s
 
 LZSA2: 9988 -> 21504 bytes (2.153x)
   CPU cycles:      584368
@@ -51,10 +51,10 @@ LZ4: 23030 -> 53161 bytes (2.308x)
   Speed:          158.125 KB/s
 
 LZSA1: 21848 -> 53161 bytes (2.433x)
-  CPU cycles:     1112884
-  Master clocks:  7351144
-  Time:             0.342 s
-  Speed:          155.316 KB/s
+  CPU cycles:     1110220
+  Master clocks:  7332290
+  Time:             0.341 s
+  Speed:          155.716 KB/s
 
 LZSA2: 20052 -> 53161 bytes (2.651x)
   CPU cycles:     1536866
@@ -77,10 +77,10 @@ LZ4: 22777 -> 46526 bytes (2.043x)
   Speed:          146.195 KB/s
 
 LZSA1: 21787 -> 46526 bytes (2.135x)
-  CPU cycles:     1052263
-  Master clocks:  6944378
+  CPU cycles:     1050967
+  Master clocks:  6934908
   Time:             0.323 s
-  Speed:          143.894 KB/s
+  Speed:          144.090 KB/s
 
 LZSA2: 19874 -> 46526 bytes (2.341x)
   CPU cycles:     1483696
@@ -103,10 +103,10 @@ LZ4: 7451 -> 13286 bytes (1.783x)
   Speed:          154.309 KB/s
 
 LZSA1: 6952 -> 13286 bytes (1.911x)
-  CPU cycles:      301126
-  Master clocks:  1995692
+  CPU cycles:      300514
+  Master clocks:  1991446
   Time:             0.093 s
-  Speed:          142.981 KB/s
+  Speed:          143.286 KB/s
 
 LZSA2: 6222 -> 13286 bytes (2.135x)
   CPU cycles:      451687
@@ -129,10 +129,10 @@ LZ4: 6718 -> 11954 bytes (1.779x)
   Speed:          154.494 KB/s
 
 LZSA1: 6224 -> 11954 bytes (1.921x)
-  CPU cycles:      268527
-  Master clocks:  1780584
+  CPU cycles:      267960
+  Master clocks:  1776626
   Time:             0.083 s
-  Speed:          144.188 KB/s
+  Speed:          144.509 KB/s
 
 LZSA2: 5581 -> 11954 bytes (2.142x)
   CPU cycles:      399616
@@ -155,10 +155,10 @@ LZ4: 17022 -> 38105 bytes (2.239x)
   Speed:          160.058 KB/s
 
 LZSA1: 15889 -> 38105 bytes (2.398x)
-  CPU cycles:      796608
-  Master clocks:  5267936
+  CPU cycles:      794646
+  Master clocks:  5253972
   Time:             0.245 s
-  Speed:          155.353 KB/s
+  Speed:          155.766 KB/s
 
 LZSA2: 14464 -> 38105 bytes (2.634x)
   CPU cycles:     1112108
@@ -181,10 +181,10 @@ LZ4: 17159 -> 39611 bytes (2.308x)
   Speed:          163.491 KB/s
 
 LZSA1: 15865 -> 39611 bytes (2.497x)
-  CPU cycles:      807659
-  Master clocks:  5342592
-  Time:             0.249 s
-  Speed:          159.237 KB/s
+  CPU cycles:      804527
+  Master clocks:  5320554
+  Time:             0.248 s
+  Speed:          159.896 KB/s
 
 LZSA2: 14492 -> 39611 bytes (2.733x)
   CPU cycles:     1120409
@@ -207,10 +207,10 @@ LZ4: 14233 -> 49379 bytes (3.469x)
   Speed:          203.714 KB/s
 
 LZSA1: 12906 -> 49379 bytes (3.826x)
-  CPU cycles:      806972
-  Master clocks:  5349036
-  Time:             0.249 s
-  Speed:          198.265 KB/s
+  CPU cycles:      803111
+  Master clocks:  5321706
+  Time:             0.248 s
+  Speed:          199.283 KB/s
 
 LZSA2: 11899 -> 49379 bytes (4.150x)
   CPU cycles:     1079410
@@ -233,10 +233,10 @@ LZ4: 10290 -> 24603 bytes (2.391x)
   Speed:          196.716 KB/s
 
 LZSA1: 9803 -> 24603 bytes (2.510x)
-  CPU cycles:      436998
-  Master clocks:  2910428
-  Time:             0.136 s
-  Speed:          181.556 KB/s
+  CPU cycles:      434010
+  Master clocks:  2889214
+  Time:             0.135 s
+  Speed:          182.889 KB/s
 
 LZSA2: 9007 -> 24603 bytes (2.732x)
   CPU cycles:      651410
@@ -259,10 +259,10 @@ LZ4: 4204 -> 11150 bytes (2.652x)
   Speed:          184.880 KB/s
 
 LZSA1: 3755 -> 11150 bytes (2.969x)
-  CPU cycles:      202009
-  Master clocks:  1339154
+  CPU cycles:      200794
+  Master clocks:  1330530
   Time:             0.062 s
-  Speed:          178.823 KB/s
+  Speed:          179.982 KB/s
 
 LZSA2: 3436 -> 11150 bytes (3.245x)
   CPU cycles:      281140
@@ -285,10 +285,10 @@ LZ4: 1720 -> 3721 bytes (2.163x)
   Speed:          188.611 KB/s
 
 LZSA1: 1518 -> 3721 bytes (2.451x)
-  CPU cycles:       67933
-  Master clocks:   452518
+  CPU cycles:       67537
+  Master clocks:   449824
   Time:             0.021 s
-  Speed:          176.605 KB/s
+  Speed:          177.663 KB/s
 
 LZSA2: 1403 -> 3721 bytes (2.652x)
   CPU cycles:      101881
@@ -311,10 +311,10 @@ LZ4: 16291 -> 38240 bytes (2.347x)
   Speed:          186.633 KB/s
 
 LZSA1: 14362 -> 38240 bytes (2.663x)
-  CPU cycles:      752274
-  Master clocks:  4999874
-  Time:             0.233 s
-  Speed:          164.262 KB/s
+  CPU cycles:      750240
+  Master clocks:  4985208
+  Time:             0.232 s
+  Speed:          164.746 KB/s
 
 LZSA2: 12017 -> 38240 bytes (3.182x)
   CPU cycles:      978170
@@ -337,10 +337,10 @@ LZ4: 2403 -> 4227 bytes (1.759x)
   Speed:          174.458 KB/s
 
 LZSA1: 2210 -> 4227 bytes (1.913x)
-  CPU cycles:       87956
-  Master clocks:   585420
+  CPU cycles:       87587
+  Master clocks:   582790
   Time:             0.027 s
-  Speed:          155.076 KB/s
+  Speed:          155.776 KB/s
 
 LZSA2: 1997 -> 4227 bytes (2.117x)
   CPU cycles:      134847
@@ -363,10 +363,10 @@ LZ4: 1117 -> 8192 bytes (7.334x)
   Speed:          275.950 KB/s
 
 LZSA1: 991 -> 8192 bytes (8.266x)
-  CPU cycles:       93644
-  Master clocks:   624518
+  CPU cycles:       92510
+  Master clocks:   616502
   Time:             0.029 s
-  Speed:          281.724 KB/s
+  Speed:          285.387 KB/s
 
 LZSA2: 958 -> 8192 bytes (8.551x)
   CPU cycles:      114977
@@ -389,10 +389,10 @@ LZ4: 434 -> 2048 bytes (4.719x)
   Speed:          403.959 KB/s
 
 LZSA1: 422 -> 2048 bytes (4.853x)
-  CPU cycles:       16019
-  Master clocks:   110334
+  CPU cycles:       15875
+  Master clocks:   109312
   Time:             0.005 s
-  Speed:          398.657 KB/s
+  Speed:          402.384 KB/s
 
 LZSA2: 411 -> 2048 bytes (4.983x)
   CPU cycles:       18442
@@ -415,10 +415,10 @@ LZ4: 1425 -> 4096 bytes (2.874x)
   Speed:          301.690 KB/s
 
 LZSA1: 1331 -> 4096 bytes (3.077x)
-  CPU cycles:       45375
-  Master clocks:   309202
+  CPU cycles:       44826
+  Master clocks:   305308
   Time:             0.014 s
-  Speed:          284.509 KB/s
+  Speed:          288.138 KB/s
 
 LZSA2: 1263 -> 4096 bytes (3.243x)
   CPU cycles:       62494
@@ -441,10 +441,10 @@ LZ4: 3537 -> 8192 bytes (2.316x)
   Speed:          292.513 KB/s
 
 LZSA1: 3419 -> 8192 bytes (2.396x)
-  CPU cycles:       95504
-  Master clocks:   652106
+  CPU cycles:       94334
+  Master clocks:   643888
   Time:             0.030 s
-  Speed:          269.806 KB/s
+  Speed:          273.249 KB/s
 
 LZSA2: 3200 -> 8192 bytes (2.560x)
   CPU cycles:      140391
@@ -467,10 +467,10 @@ LZ4: 3852 -> 8192 bytes (2.127x)
   Speed:          357.528 KB/s
 
 LZSA1: 3742 -> 8192 bytes (2.189x)
-  CPU cycles:       76356
-  Master clocks:   531710
-  Time:             0.025 s
-  Speed:          330.898 KB/s
+  CPU cycles:       75402
+  Master clocks:   524856
+  Time:             0.024 s
+  Speed:          335.219 KB/s
 
 LZSA2: 3516 -> 8192 bytes (2.330x)
   CPU cycles:      136577
@@ -493,10 +493,10 @@ LZ4: 3972 -> 9312 bytes (2.344x)
   Speed:          193.954 KB/s
 
 LZSA1: 3630 -> 9312 bytes (2.565x)
-  CPU cycles:      165426
-  Master clocks:  1103094
+  CPU cycles:      164571
+  Master clocks:  1097002
   Time:             0.051 s
-  Speed:          181.305 KB/s
+  Speed:          182.312 KB/s
 
 LZSA2: 3369 -> 9312 bytes (2.764x)
   CPU cycles:      235478
@@ -519,10 +519,10 @@ LZ4: 29987 -> 64115 bytes (2.138x)
   Speed:          143.985 KB/s
 
 LZSA1: 28725 -> 64115 bytes (2.232x)
-  CPU cycles:     1443134
-  Master clocks:  9513998
+  CPU cycles:     1441910
+  Master clocks:  9505308
   Time:             0.443 s
-  Speed:          144.736 KB/s
+  Speed:          144.868 KB/s
 
 LZSA2: 26582 -> 64115 bytes (2.412x)
   CPU cycles:     1997392
@@ -545,10 +545,10 @@ LZ4: 17963 -> 32893 bytes (1.831x)
   Speed:          137.775 KB/s
 
 LZSA1: 17214 -> 32893 bytes (1.911x)
-  CPU cycles:      792182
-  Master clocks:  5229112
+  CPU cycles:      791642
+  Master clocks:  5225490
   Time:             0.243 s
-  Speed:          135.100 KB/s
+  Speed:          135.193 KB/s
 
 LZSA2: 15450 -> 32893 bytes (2.129x)
   CPU cycles:     1136840
