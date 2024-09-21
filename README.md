@@ -1,6 +1,6 @@
 # SHVC-LZ
 
-A collection of decoders for various modern variants of Lempel-Ziv style compression targeting the Super Famicom/Nintendo system. Written for the [ca65 assembler](https://cc65.github.io/doc/ca65.html), but should be easy to port to other assemblers.
+A collection of decoders for various modern Lempel-Ziv compression variants targeting the Super Famicom/Nintendo system. Written for the [ca65 assembler](https://cc65.github.io/doc/ca65.html), but should be easy to port to other assemblers.
 
 Common characteristics:
 - Designed for speed over code size
@@ -54,7 +54,7 @@ Between the faster decompression of LZSA1 and the better compression ratio of ZX
 
 ## ZX0
 
-[ZX0](https://github.com/einar-saukas/ZX0) has the best compression ratio of the schemes included in this collection, which is achieved by encoding the length/match tokens in an [interlaced](https://github.com/einar-saukas/Zeta-Xi-Code?tab=readme-ov-file#factor-r) [Elias gamma coded](https://en.wikipedia.org/wiki/Elias_gamma_coding) bit stream. The bit twiddling involved accounts for the slower speed compared to the pure byte aligned (nibble in the case of LZSA2) accesses needed by the other decompressors.
+[ZX0](https://github.com/einar-saukas/ZX0) has the best compression ratio of the algorithms included in this collection, which is achieved by encoding the length/match tokens in an [interlaced](https://github.com/einar-saukas/Zeta-Xi-Code?tab=readme-ov-file#factor-r) [Elias gamma coded](https://en.wikipedia.org/wiki/Elias_gamma_coding) bit stream. The bit twiddling involved accounts for the slower speed compared to the pure byte or nibble aligned accesses needed by the other decompressors.
 
 That said it is still quite fast, and should be the clear choice if good compression ratio is the priority. It also has the smallest code size of the included decompressors.
 
